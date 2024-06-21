@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_Cylinder" Id="{c5f5e301-2dad-4980-9099-2aea1dcf63b3}">
+    <Declaration><![CDATA[INTERFACE I_Cylinder
+]]></Declaration>
+    <Property Name="Config" Id="{1a8f4113-562f-4303-a4ac-e3dc7a6f21e2}">
+      <Declaration><![CDATA[PROPERTY PUBLIC Config : REFERENCE TO ST_CylinderConfig]]></Declaration>
+      <Get Name="Get" Id="{9505e93f-1af3-46af-86ae-30758fa99b8a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="inHP" Id="{39c2d449-199d-46ee-910a-ba1ff3cc2305}">
+      <Declaration><![CDATA[PROPERTY PUBLIC inHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{f6860966-e6c9-4f2d-a24c-d7a7d19957d1}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="interlock" Id="{16e7c4f2-1fc3-4869-83b0-ea27bacaa746}">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlock : BOOL]]></Declaration>
+      <Get Name="Get" Id="{4b400900-edce-4bda-ab6f-e2add6e96a70}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{e03ea5a9-3e1a-4628-8fd2-80b41094d372}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="inWP" Id="{3c1cb09a-ef9f-4672-9198-506b4f224e44}">
+      <Declaration><![CDATA[PROPERTY PUBLIC inWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1ce88175-8a16-471c-9864-81c4b17a7be0}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="moveToHP" Id="{9d2a05ac-b15a-4400-a8bf-7b7682136c31}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToHP
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="moveToWP" Id="{4f67f11d-8dac-44c5-b1ee-185be19b9b38}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToWP
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="off" Id="{87d49e7f-c993-4cae-975b-02234bb3e223}">
+      <Declaration><![CDATA[METHOD PUBLIC off
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

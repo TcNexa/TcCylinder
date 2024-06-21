@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_CylinderConfig" Id="{2e6d4058-d13e-44e2-abc2-7ee7d1baa05a}">
+    <Declaration><![CDATA[TYPE ST_CylinderConfig :
+STRUCT
+	monitorMovementTimeout		: BOOL:= TRUE;
+	movementTimeout				: TIME:= T#5S;
+	monitorSensorsOverlap		: BOOL:= TRUE;
+	sensorsOverlapTimeout		: TIME:= T#100MS;
+	notUsedSensorHP				: BOOL;
+	notUsedSensorWP				: BOOL;
+	delayTimeAfterReachedHP		: TIME;
+	delayTimeAfterReachedWP		: TIME;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>
