@@ -44,9 +44,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_methodName:= methodName;
-
-IF (_calledMethod = '') THEN
+        <ST><![CDATA[IF (_calledMethod = '') THEN
 	_calledMethod:= methodName;
 	_Step.init();
 	_methodTimeout(IN:= FALSE);
