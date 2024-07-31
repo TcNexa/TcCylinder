@@ -3,6 +3,7 @@
   <POU Name="PRG_TEST" Id="{58c96f65-a512-401a-b154-ddc116720dca}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM PRG_TEST
 VAR
+	_test : FB_Cylinder;
 END_VAR
 ]]></Declaration>
     <Implementation>

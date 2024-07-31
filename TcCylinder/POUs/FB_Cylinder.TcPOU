@@ -11,7 +11,8 @@ VAR
 	_Config						: ST_CylinderConfig;
 	_inHP						: BOOL;
 	_inWP						: BOOL;
-	_interlock					: BOOL;
+	_interlockHP				: BOOL;
+	_interlockWP				: BOOL;
 	_manualMode					: BOOL;
 	_sensorTagHP				: STRING;
 	_sensorTagWP				: STRING;
@@ -124,14 +125,14 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="interlock" Id="{2ec3b7fa-47d6-47df-818d-ec768154935d}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY PUBLIC interlock : BOOL]]></Declaration>
+    <Property Name="interlockHP" Id="{2ec3b7fa-47d6-47df-818d-ec768154935d}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockHP : BOOL]]></Declaration>
       <Get Name="Get" Id="{9412a675-9b51-499c-b61d-3bdaa0f5ceba}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[interlock:= _interlock;]]></ST>
+          <ST><![CDATA[interlockHP:= _interlockHP;]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{a1cff2e9-637d-4ae4-9ba6-c63c8405c671}">
@@ -139,7 +140,26 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[_interlock:= interlock;]]></ST>
+          <ST><![CDATA[_interlockHP:= interlockHP;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="interlockWP" Id="{9fca9c07-fa9f-0bce-176b-4edef454fd86}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{9b37a67d-9b5c-0ce5-22b1-73b8f09ab88a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[interlockWP:= _interlockWP;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{42f947e6-cdd4-0852-24ad-2337a05f93c1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_interlockWP:= interlockWP;]]></ST>
         </Implementation>
       </Set>
     </Property>
@@ -188,37 +208,38 @@ IF _methodState.init THEN
 END_IF
 
 IF _methodState.execute THEN
-	IF NOT _interlock THEN
+	IF NOT _interlockHP THEN
 		valveHP:= TRUE;
 		valveWP:= FALSE;		
-	END_IF
-	
-	_timerTimeout(
-		IN:= valveHP AND NOT sensorHP AND NOT _Config.notUsedSensorHP AND _Config.monitorMovementTimeout,
-		PT:= _Config.movementTimeout);	
-	_timerPositionReached(
-		IN:= (_Config.notUsedSensorHP OR sensorHP) AND NOT sensorWP,
-		PT:= _Config.delayTimeAfterReachedHP);
-	_timerSensorsOverlap(
-		IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
-		PT:= _Config.sensorsOverlapTimeout);
-	(* Error - both sensors active *)
-	IF _timerSensorsOverlap.Q THEN
-		_tmpText:= _getErrorDescription(error:= 'both sensors active');
-		_InternalResponse.setFail(description:= _tmpText);
-	(* Error movement - end position not reached *)		
-	ELSIF _timerTimeout.Q THEN
-		_tmpText:= _appendSensorNameToError(error:= 'position not reached', sensorName:= _sensorTagHP);
-		_tmpText:= _getErrorDescription(error:= _tmpText);
-		_InternalResponse.setFail(description:= _tmpText);
-	(* Interlock active *)
-	ELSIF _interlock THEN
+		
+		_timerTimeout(
+			IN:= valveHP AND NOT sensorHP AND NOT _Config.notUsedSensorHP AND _Config.monitorMovementTimeout,
+			PT:= _Config.movementTimeout);	
+		_timerPositionReached(
+			IN:= (_Config.notUsedSensorHP OR sensorHP) AND NOT sensorWP,
+			PT:= _Config.delayTimeAfterReachedHP);
+		_timerSensorsOverlap(
+			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
+			PT:= _Config.sensorsOverlapTimeout);
+		(* Error - both sensors active *)
+		IF _timerSensorsOverlap.Q THEN
+			_tmpText:= _getErrorDescription(error:= 'both sensors active');
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Error movement - end position not reached *)		
+		ELSIF _timerTimeout.Q THEN
+			_tmpText:= _appendSensorNameToError(error:= 'position not reached', sensorName:= _sensorTagHP);
+			_tmpText:= _getErrorDescription(error:= _tmpText);
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Succes - end position reached *)
+		ELSIF _timerPositionReached.Q THEN
+			_InternalResponse.setPass();
+		END_IF
+	ELSE
 		_tmpText:= Tc2_Standard.CONCAT(STR1:= _nameTag, STR2:= ' interlock active');
 		_InternalResponse.setBusy(description:= _tmpText);
-	(* Succes - end position reached *)
-	ELSIF _timerPositionReached.Q THEN
-		_InternalResponse.setPass();
-	END_IF	
+		_timerTimeout(IN:= FALSE);
+		_timerPositionReached(IN:= FALSE);	
+	END_IF
 END_IF
 
 _methodFooter(Response:= Response);]]></ST>
@@ -239,37 +260,38 @@ IF _methodState.init THEN
 END_IF
 
 IF _methodState.execute THEN
-	IF NOT _interlock THEN
+	IF NOT _interlockWP THEN
 		valveHP:= FALSE;
 		valveWP:= TRUE;		
-	END_IF
-	
-	_timerTimeout(
-		IN:= valveWP AND NOT sensorWP AND NOT _Config.notUsedSensorWP AND _Config.monitorMovementTimeout,
-		PT:= _Config.movementTimeout);	
-	_timerPositionReached(
-		IN:= (_Config.notUsedSensorWP OR sensorWP) AND NOT sensorHP,
-		PT:= _Config.delayTimeAfterReachedWP);
-	_timerSensorsOverlap(
-		IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
-		PT:= _Config.sensorsOverlapTimeout);
-	(* Error - both sensors active *)
-	IF _timerSensorsOverlap.Q THEN
-		_tmpText:= _getErrorDescription(error:= 'both sensors active');
-		_InternalResponse.setFail(description:= _tmpText);
-	(* Error movement - end position not reached *)		
-	ELSIF _timerTimeout.Q THEN
-		_tmpText:= _appendSensorNameToError(error:= 'position not reached', sensorName:= _sensorTagWP);
-		_tmpText:= _getErrorDescription(error:= _tmpText);
-		_InternalResponse.setFail(description:= _tmpText);
-	(* Interlock active *)
-	ELSIF _interlock THEN
+		
+		_timerTimeout(
+			IN:= valveWP AND NOT sensorWP AND NOT _Config.notUsedSensorWP AND _Config.monitorMovementTimeout,
+			PT:= _Config.movementTimeout);	
+		_timerPositionReached(
+			IN:= (_Config.notUsedSensorWP OR sensorWP) AND NOT sensorHP,
+			PT:= _Config.delayTimeAfterReachedWP);
+		_timerSensorsOverlap(
+			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
+			PT:= _Config.sensorsOverlapTimeout);
+		(* Error - both sensors active *)
+		IF _timerSensorsOverlap.Q THEN
+			_tmpText:= _getErrorDescription(error:= 'both sensors active');
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Error movement - end position not reached *)		
+		ELSIF _timerTimeout.Q THEN
+			_tmpText:= _appendSensorNameToError(error:= 'position not reached', sensorName:= _sensorTagWP);
+			_tmpText:= _getErrorDescription(error:= _tmpText);
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Succes - end position reached *)
+		ELSIF _timerPositionReached.Q THEN
+			_InternalResponse.setPass();
+		END_IF	
+	ELSE
 		_tmpText:= Tc2_Standard.CONCAT(STR1:= _nameTag, STR2:= ' interlock active');
 		_InternalResponse.setBusy(description:= _tmpText);
-	(* Succes - end position reached *)
-	ELSIF _timerPositionReached.Q THEN
-		_InternalResponse.setPass();
-	END_IF	
+		_timerTimeout(IN:= FALSE);
+		_timerPositionReached(IN:= FALSE);		
+	END_IF
 END_IF
 
 _methodFooter(Response:= Response);]]></ST>

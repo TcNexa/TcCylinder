@@ -15,12 +15,21 @@
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Property Name="interlock" Id="{16e7c4f2-1fc3-4869-83b0-ea27bacaa746}">
-      <Declaration><![CDATA[PROPERTY PUBLIC interlock : BOOL]]></Declaration>
-      <Get Name="Get" Id="{4b400900-edce-4bda-ab6f-e2add6e96a70}">
+    <Property Name="interlockHP" Id="{43421e2d-0c30-06d1-0797-074421230813}">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{ba540fc3-33c1-087d-3147-014199a12d3d}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
-      <Set Name="Set" Id="{e03ea5a9-3e1a-4628-8fd2-80b41094d372}">
+      <Set Name="Set" Id="{798686c5-ae5d-0db3-36b6-f8457c3b0779}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="interlockWP" Id="{efa5008d-2cad-0334-0f11-566d2c6c8df0}">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{edfa9e16-cb25-0d13-1ab2-72eee85ebb7f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{c10ae8a7-f5c9-0a38-3ae5-b82b9eba5eed}">
         <Declaration><![CDATA[]]></Declaration>
       </Set>
     </Property>
