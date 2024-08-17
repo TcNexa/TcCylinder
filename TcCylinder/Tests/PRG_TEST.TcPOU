@@ -4,6 +4,7 @@
     <Declaration><![CDATA[PROGRAM PRG_TEST
 VAR
 	_test : FB_Cylinder;
+	test2 : FB_CylinderThreePositions;
 END_VAR
 ]]></Declaration>
     <Implementation>

@@ -106,13 +106,25 @@
     <CombineIds>true</CombineIds>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CylinderThreePosition\DUTs\ST_CylinderThreePositionConfig.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CylinderThreePosition\ITFs\I_CylinderThreePositions.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CylinderThreePosition\POUs\FB_CylinderThreePositions.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cylinder\DUTs\ST_CylinderConfig.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cylinder\ITFs\I_Cylinder.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cylinder\POUs\FB_Cylinder.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ITFs\I_Cylinder.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\FB_Cylinder.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\ST_CylinderConfig.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
@@ -126,8 +138,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="CylinderThreePosition\ITFs" />
+    <Folder Include="CylinderThreePosition\DUTs" />
+    <Folder Include="CylinderThreePosition\POUs" />
+    <Folder Include="Cylinder\DUTs" />
+    <Folder Include="Cylinder\ITFs" />
+    <Folder Include="Cylinder\POUs" />
+    <Folder Include="Cylinder" />
+    <Folder Include="CylinderThreePosition" />
     <Folder Include="ITFs" />
-    <Folder Include="POUs" />
     <Folder Include="Tests" />
     <Folder Include="Version" />
   </ItemGroup>

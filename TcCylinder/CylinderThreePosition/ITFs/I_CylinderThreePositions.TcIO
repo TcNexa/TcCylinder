@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Itf Name="I_CylinderThreePositions" Id="{cc60e9b5-5ff9-40d0-b1b4-0e2f9971af52}">
+    <Declaration><![CDATA[INTERFACE I_CylinderThreePositions
+]]></Declaration>
+    <Folder Name="Property" Id="{1c621e89-0da2-4256-9a61-4aa4e5e2be52}" />
+    <Property Name="Config" Id="{9742e1b1-3e8f-4518-9cd4-2d38a1c1e4e2}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC Config : REFERENCE TO ST_CylinderThreePositionConfig]]></Declaration>
+      <Get Name="Get" Id="{cbab1b83-0ca8-403c-a6fc-356cd521d281}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="inHP" Id="{ade59485-65d9-4ca6-9632-bb13ff731494}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC inHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{dbb04ebf-b32e-4e5d-ac7a-0aaf39caacf3}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="inMID" Id="{29f71005-7509-46b9-ab06-2d94985da493}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC inMID : BOOL]]></Declaration>
+      <Get Name="Get" Id="{6c716f58-0975-4c29-b47d-e46e9b22e7d3}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="interlockHP" Id="{a37f8412-5b76-492f-b25f-63692da26e64}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{b9fe4d8a-155f-4b3f-b595-82355c5f0c2e}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{0990751f-49d2-41db-a94d-58e1655ffd88}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="interlockMID" Id="{9101f936-3d11-47f7-8497-2bcb9ab5c034}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockMID : BOOL]]></Declaration>
+      <Get Name="Get" Id="{d41f56e0-d5c1-49d8-ae20-fcdc91f5d64c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{69cb3f68-527d-441f-8d75-9c9d5725e356}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="interlockWP" Id="{cde9eb03-1fcd-488f-8910-14572107d189}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1d84597d-e7a7-4550-98f8-5cec3e2bfc72}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{57a6fc25-a01c-478e-8782-4db900a89c16}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="inWP" Id="{fe7bd9c8-f530-4778-af31-0ed23677f1f7}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC inWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{f4341940-8b70-4618-bb19-a265f874a46d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="moveToHP" Id="{97e7407d-0d73-436c-bc8f-b688daf02e83}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToHP
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="moveToMID" Id="{f54d112f-66c8-43f2-864d-c9eb335fed87}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToMID
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="moveToWP" Id="{5864ad4a-861a-4646-bb62-da883132a630}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToWP
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="off" Id="{231192d2-8252-4ab4-9e26-b9187b497f8a}">
+      <Declaration><![CDATA[METHOD PUBLIC off
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

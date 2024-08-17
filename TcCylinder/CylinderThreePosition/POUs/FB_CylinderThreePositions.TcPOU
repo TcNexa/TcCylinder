@@ -1,0 +1,367 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_CylinderThreePositions" Id="{00001a3a-1324-47c5-ac30-c7eb332a50db}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_CylinderThreePositions EXTENDS TcNexa_Devices_TcDeviceBase.FB_DeviceBase IMPLEMENTS I_CylinderThreePositions
+VAR
+	sensorHP		AT %I*		: BOOL;
+	sensorMID		AT %I*		: BOOL;
+	sensorWP		AT %I*		: BOOL;
+	valveHP			AT %Q*		: BOOL;
+	valveWP			AT %Q*		: BOOL;
+	(* Local *)             	
+	_Config						: ST_CylinderThreePositionConfig;
+	_inHP						: BOOL;
+	_inMID						: BOOL;
+	_inWP						: BOOL;
+	_interlockHP				: BOOL;
+	_interlockMID				: BOOL;
+	_interlockWP				: BOOL;
+	_sensorTagHP				: STRING;
+	_sensorTagMID				: STRING;
+	_sensorTagWP				: STRING;
+	_timerTimeout				: Tc2_Standard.TON;
+	_timerPositionReached		: Tc2_Standard.TON;
+	_timerSensorsOverlap		: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Private" Id="{e6e84292-ff61-0944-32ee-4ba915afe079}" />
+    <Folder Name="Property" Id="{a7bef559-b57c-094f-30d8-da06edaa0db8}" />
+    <Method Name="_appendSensorNameToError" Id="{6b83d5c1-869a-018c-0d95-a4b28095d322}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PROTECTED _appendSensorNameToError : Tc2_System.T_MaxString
+VAR_INPUT
+	error			: Tc2_System.T_MaxString;
+	sensorName		: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_appendSensorNameToError:= Tc2_Standard.CONCAT(STR1:= error, STR2:= ' (');
+_appendSensorNameToError:= Tc2_Standard.CONCAT(STR1:= _appendSensorNameToError, STR2:= sensorName);
+_appendSensorNameToError:= Tc2_Standard.CONCAT(STR1:= _appendSensorNameToError, STR2:= ')');]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_methodHeader" Id="{34cf927a-d8fb-023a-20de-aafe4eb410d5}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PROTECTED _methodHeader : ST_MethodState
+VAR_INPUT
+	methodName		: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (_calledMethod = '') THEN
+	_calledMethod:= methodName;
+	_Step.init();
+	_methodTimeout(IN:= FALSE);
+	_methodHeader.init:= TRUE;
+	_methodHeader.execute:= TRUE;
+	_executeMethod:= TRUE;
+	_InternalResponse.setBusy(description:= methodName);
+ELSIF (_calledMethod = methodName) THEN
+	_executeMethod:= TRUE;
+	_tmpText:= _getBusyDescription(description:= 'in progress...');
+	_InternalResponse.setBusy(description:= _tmpText);
+	_methodHeader.execute:= TRUE;
+ELSE
+	_tmpText:= _getBusyDescription(description:= 'in progress...');
+	_InternalResponse.setBusy(description:= _tmpText);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Config" Id="{22352d55-1013-0d1d-27f9-afb5c4253b18}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC Config : REFERENCE TO ST_CylinderThreePositionConfig]]></Declaration>
+      <Get Name="Get" Id="{ee4c48dc-a0e2-0d97-37b2-0fae0aa4f29b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Config REF= _Config;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_init" Id="{f01fc41f-ddfc-07e2-1a18-bda5b74c18d8}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	name			: STRING;
+	tag				: STRING;
+	timeout			: TIME;
+	sensorTagHP		: STRING;
+	sensorTagMID	: STRING;
+	sensorTagWP		: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._sensorTagHP:= sensorTagHP;
+THIS^._sensorTagMID:= sensorTagMID;
+THIS^._sensorTagWP:= sensorTagWP;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_main" Id="{39094d3b-4333-4955-bdc2-486b83195d69}">
+      <Declaration><![CDATA[METHOD PUBLIC FB_main
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.FB_main();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="inHP" Id="{8e8c96a3-9360-0a03-35aa-09bd2a3fc18c}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC inHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{31870602-99a2-0602-0c57-06f3f0663908}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[inHP:= _inHP;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="inMID" Id="{fcbdeb57-1066-4829-acd0-fbbda96e0e6d}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC inMID : BOOL]]></Declaration>
+      <Get Name="Get" Id="{b532bf4c-01ac-4402-a911-2428da0029bd}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[inMID:= _inMID;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="interlockHP" Id="{73764bad-c32d-06e3-0b91-8641c4fdd601}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{c9a75a22-1faa-08a0-3c01-51ede55c8be6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[interlockHP:= _interlockHP;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{fc7a0ebe-e786-0bd8-11ba-ac0bc1ac832d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_interlockHP:= interlockHP;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="interlockMID" Id="{2fc167ec-2351-4f20-b23c-5961b8b13ba0}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockMID : BOOL]]></Declaration>
+      <Get Name="Get" Id="{63ceae8d-7f43-445d-be0e-0ebccbc13eb3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[interlockMID:= _interlockMID;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{a0a82d40-92ae-46da-a5d4-d4816d8a793e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_interlockHP:= interlockHP;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="interlockWP" Id="{c27f6050-7e64-4af2-9d77-24e9b1fdb8da}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC interlockWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{c6825a2a-1fa7-4dd9-a8ad-198fb533fdd6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[interlockWP:= _interlockWP;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{1f4cbbb1-492f-496e-aeb1-4900e5f6d69d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_interlockWP:= interlockWP;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="inWP" Id="{69e5bbc2-ce0e-07c7-26b6-34e4afb65366}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC inWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{fab9ae13-3f53-0e3d-1156-a985f69b7c2b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[inWP:= _inWP;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="moveToHP" Id="{7c7cb99b-af56-05fc-3cc8-bb9460ed4aec}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToHP
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_methodState:= _methodHeader(methodName:= 'move to HP');
+				
+IF _methodState.init THEN
+	_timerTimeout(IN:= FALSE);
+	_timerPositionReached(IN:= FALSE);
+END_IF
+
+IF _methodState.execute THEN
+	IF NOT _interlockHP THEN
+		valveHP:= TRUE;
+		valveWP:= FALSE;		
+		
+		_timerTimeout(
+			IN:= valveHP AND NOT sensorHP AND NOT _Config.notUsedSensorHP AND _Config.monitorMovementTimeout,
+			PT:= _Config.movementTimeout);	
+		_timerPositionReached(
+			IN:= (_Config.notUsedSensorHP OR sensorHP) AND NOT sensorMID AND NOT sensorWP,
+			PT:= _Config.delayTimeAfterReachedHP);
+		_timerSensorsOverlap(
+			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
+			PT:= _Config.sensorsOverlapTimeout);
+		(* Error - both sensors active *)
+		IF _timerSensorsOverlap.Q THEN
+			_tmpText:= _getErrorDescription(error:= 'both sensors active');
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Error movement - end position not reached *)		
+		ELSIF _timerTimeout.Q THEN
+			_tmpText:= _appendSensorNameToError(error:= 'position not reached', sensorName:= _sensorTagHP);
+			_tmpText:= _getErrorDescription(error:= _tmpText);
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Succes - end position reached *)
+		ELSIF _timerPositionReached.Q THEN
+			_InternalResponse.setPass();
+		END_IF
+	ELSE
+		_tmpText:= Tc2_Standard.CONCAT(STR1:= _nameTag, STR2:= ' interlock active');
+		_InternalResponse.setBusy(description:= _tmpText);
+		_timerTimeout(IN:= FALSE);
+		_timerPositionReached(IN:= FALSE);	
+	END_IF
+END_IF
+
+_methodFooter(Response:= Response);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="moveToMID" Id="{4adb955b-64e6-4b1e-a370-378ce537856d}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToMID
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_methodState:= _methodHeader(methodName:= 'move to MID');
+				
+IF _methodState.init THEN
+	_timerTimeout(IN:= FALSE);
+	_timerPositionReached(IN:= FALSE);
+END_IF
+
+IF _methodState.execute THEN
+	IF NOT _interlockMID THEN
+		valveHP:= FALSE;
+		valveWP:= FALSE;		
+		
+		_timerTimeout(
+			IN:= NOT sensorMID AND NOT _Config.notUsedSensorMID AND _Config.monitorMovementTimeout,
+			PT:= _Config.movementTimeout);	
+		_timerPositionReached(
+			IN:= (_Config.notUsedSensorMID OR NOT sensorMID) AND NOT sensorHP AND NOT sensorWP,
+			PT:= _Config.delayTimeAfterReachedMID);
+		_timerSensorsOverlap(
+			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
+			PT:= _Config.sensorsOverlapTimeout);
+		(* Error - both sensors active *)
+		IF _timerSensorsOverlap.Q THEN
+			_tmpText:= _getErrorDescription(error:= 'both sensors active');
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Error movement - end position not reached *)		
+		ELSIF _timerTimeout.Q THEN
+			_tmpText:= _appendSensorNameToError(error:= 'position not reached', sensorName:= _sensorTagMID);
+			_tmpText:= _getErrorDescription(error:= _tmpText);
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Succes - end position reached *)
+		ELSIF _timerPositionReached.Q THEN
+			_InternalResponse.setPass();
+		END_IF
+	ELSE
+		_tmpText:= Tc2_Standard.CONCAT(STR1:= _nameTag, STR2:= ' interlock active');
+		_InternalResponse.setBusy(description:= _tmpText);
+		_timerTimeout(IN:= FALSE);
+		_timerPositionReached(IN:= FALSE);	
+	END_IF
+END_IF
+
+_methodFooter(Response:= Response);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="moveToWP" Id="{fbcf44f6-6d2f-0fca-39c3-f4f5e327fe45}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToWP
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_methodState:= _methodHeader(methodName:= 'move to WP');
+				
+IF _methodState.init THEN
+	_timerTimeout(IN:= FALSE);
+	_timerPositionReached(IN:= FALSE);
+END_IF
+
+IF _methodState.execute THEN
+	IF NOT _interlockWP THEN
+		valveHP:= FALSE;
+		valveWP:= TRUE;		
+		
+		_timerTimeout(
+			IN:= valveWP AND NOT sensorWP AND NOT _Config.notUsedSensorWP AND _Config.monitorMovementTimeout,
+			PT:= _Config.movementTimeout);	
+		_timerPositionReached(
+			IN:= (_Config.notUsedSensorWP OR sensorWP) AND NOT sensorMID AND NOT sensorHP,
+			PT:= _Config.delayTimeAfterReachedWP);
+		_timerSensorsOverlap(
+			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
+			PT:= _Config.sensorsOverlapTimeout);
+		(* Error - both sensors active *)
+		IF _timerSensorsOverlap.Q THEN
+			_tmpText:= _getErrorDescription(error:= 'both sensors active');
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Error movement - end position not reached *)		
+		ELSIF _timerTimeout.Q THEN
+			_tmpText:= _appendSensorNameToError(error:= 'position not reached', sensorName:= _sensorTagWP);
+			_tmpText:= _getErrorDescription(error:= _tmpText);
+			_InternalResponse.setFail(description:= _tmpText);
+		(* Succes - end position reached *)
+		ELSIF _timerPositionReached.Q THEN
+			_InternalResponse.setPass();
+		END_IF	
+	ELSE
+		_tmpText:= Tc2_Standard.CONCAT(STR1:= _nameTag, STR2:= ' interlock active');
+		_InternalResponse.setBusy(description:= _tmpText);
+		_timerTimeout(IN:= FALSE);
+		_timerPositionReached(IN:= FALSE);		
+	END_IF
+END_IF
+
+_methodFooter(Response:= Response);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="off" Id="{5e2a3d12-3d89-0e79-00a7-a48740c0412c}">
+      <Declaration><![CDATA[METHOD PUBLIC off
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[valveHP:= FALSE;
+valveWP:= FALSE;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

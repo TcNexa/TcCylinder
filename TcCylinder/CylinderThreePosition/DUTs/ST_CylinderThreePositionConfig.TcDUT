@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_CylinderThreePositionConfig" Id="{73d8bc0f-55c5-05de-21de-14d09413e506}">
+    <Declaration><![CDATA[TYPE ST_CylinderThreePositionConfig :
+STRUCT
+	monitorMovementTimeout		: BOOL:= TRUE;
+	movementTimeout				: TIME:= T#5S;
+	monitorSensorsOverlap		: BOOL:= TRUE;
+	sensorsOverlapTimeout		: TIME:= T#100MS;
+	notUsedSensorHP				: BOOL;
+	notUsedSensorMID			: BOOL;
+	notUsedSensorWP				: BOOL;
+	delayTimeAfterReachedHP		: TIME;
+	delayTimeAfterReachedMID	: TIME;
+	delayTimeAfterReachedWP		: TIME;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -13,7 +13,6 @@ VAR
 	_inWP						: BOOL;
 	_interlockHP				: BOOL;
 	_interlockWP				: BOOL;
-	_manualMode					: BOOL;
 	_sensorTagHP				: STRING;
 	_sensorTagWP				: STRING;
 	_timerTimeout				: Tc2_Standard.TON;
@@ -171,25 +170,6 @@ END_VAR
           <ST><![CDATA[inWP:= _inWP;]]></ST>
         </Implementation>
       </Get>
-    </Property>
-    <Property Name="manualMode" Id="{a3721235-59b6-023e-3fac-9e26f53ec16d}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY PUBLIC manualMode : BOOL]]></Declaration>
-      <Get Name="Get" Id="{0edf4742-e6fb-0d6b-0050-4fcca0198a06}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[manualMode:= _manualMode;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{6337c6de-0ce9-0c5e-3cb0-c4e83e6d5d03}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_manualMode:= manualMode;]]></ST>
-        </Implementation>
-      </Set>
     </Property>
     <Method Name="moveToHP" Id="{21c945cc-2bad-44c0-b6d4-d1a325440fb0}">
       <Declaration><![CDATA[METHOD PUBLIC moveToHP
