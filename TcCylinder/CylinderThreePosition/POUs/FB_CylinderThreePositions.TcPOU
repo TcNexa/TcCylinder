@@ -68,6 +68,17 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="_statusHandler" Id="{debb4777-c9f3-0dfd-0499-46479d43f7ec}" FolderPath="Private\">
+      <Declaration><![CDATA[METHOD PROTECTED _statusHandler
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_inHP:= valveHP AND NOT valveWP AND sensorHP AND NOT sensorMID AND NOT sensorWP;
+_inMID:= NOT valveHP AND NOT valveWP AND NOT sensorHP AND sensorMID AND NOT sensorWP;
+_inWP:= NOT valveHP AND valveWP AND NOT sensorHP AND NOT sensorMID AND sensorWP;]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="Config" Id="{22352d55-1013-0d1d-27f9-afb5c4253b18}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC Config : REFERENCE TO ST_CylinderThreePositionConfig]]></Declaration>
       <Get Name="Get" Id="{ee4c48dc-a0e2-0d97-37b2-0fae0aa4f29b}">
@@ -104,7 +115,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[SUPER^.FB_main();]]></ST>
+        <ST><![CDATA[SUPER^.FB_main();
+_statusHandler();]]></ST>
       </Implementation>
     </Method>
     <Property Name="inHP" Id="{8e8c96a3-9360-0a03-35aa-09bd2a3fc18c}" FolderPath="Property\">
