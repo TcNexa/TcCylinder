@@ -284,7 +284,7 @@ IF _methodState.execute THEN
 			IN:= NOT sensorMID AND NOT _Config.notUsedSensorMID AND _Config.monitorMovementTimeout,
 			PT:= _Config.movementTimeout);	
 		_timerPositionReached(
-			IN:= (_Config.notUsedSensorMID OR NOT sensorMID) AND NOT sensorHP AND NOT sensorWP,
+			IN:= (_Config.notUsedSensorMID OR sensorMID) AND NOT sensorHP AND NOT sensorWP,
 			PT:= _Config.delayTimeAfterReachedMID);
 		_timerSensorsOverlap(
 			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,

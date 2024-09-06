@@ -194,7 +194,7 @@ IF _methodState.execute THEN
 			IN:= valveHP AND NOT sensorHP AND NOT _Config.notUsedSensorHP AND _Config.monitorMovementTimeout,
 			PT:= _Config.movementTimeout);	
 		_timerPositionReached(
-			IN:= (_Config.notUsedSensorHP OR sensorHP) AND NOT sensorWP,
+			IN:= (_Config.notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _Config.monitorSensorsOverlap),
 			PT:= _Config.delayTimeAfterReachedHP);
 		_timerSensorsOverlap(
 			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
@@ -246,7 +246,7 @@ IF _methodState.execute THEN
 			IN:= valveWP AND NOT sensorWP AND NOT _Config.notUsedSensorWP AND _Config.monitorMovementTimeout,
 			PT:= _Config.movementTimeout);	
 		_timerPositionReached(
-			IN:= (_Config.notUsedSensorWP OR sensorWP) AND NOT sensorHP,
+			IN:= (_Config.notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _Config.monitorSensorsOverlap),
 			PT:= _Config.delayTimeAfterReachedWP);
 		_timerSensorsOverlap(
 			IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
