@@ -229,7 +229,7 @@ IF _methodState.execute THEN
 		valveWP:= FALSE;		
 		
 		_timerTimeout(
-			IN:= valveHP AND NOT sensorHP AND NOT _Config.notUsedSensorHP AND _Config.monitorMovementTimeout,
+			IN:= _Config.monitorMovementTimeout,
 			PT:= _Config.movementTimeout);	
 		_timerPositionReached(
 			IN:= (_Config.notUsedSensorHP OR sensorHP) AND NOT sensorMID AND NOT sensorWP,
@@ -281,7 +281,7 @@ IF _methodState.execute THEN
 		valveWP:= FALSE;		
 		
 		_timerTimeout(
-			IN:= NOT sensorMID AND NOT _Config.notUsedSensorMID AND _Config.monitorMovementTimeout,
+			IN:= _Config.monitorMovementTimeout,
 			PT:= _Config.movementTimeout);	
 		_timerPositionReached(
 			IN:= (_Config.notUsedSensorMID OR sensorMID) AND NOT sensorHP AND NOT sensorWP,
@@ -333,7 +333,7 @@ IF _methodState.execute THEN
 		valveWP:= TRUE;		
 		
 		_timerTimeout(
-			IN:= valveWP AND NOT sensorWP AND NOT _Config.notUsedSensorWP AND _Config.monitorMovementTimeout,
+			IN:= _Config.monitorMovementTimeout,
 			PT:= _Config.movementTimeout);	
 		_timerPositionReached(
 			IN:= (_Config.notUsedSensorWP OR sensorWP) AND NOT sensorMID AND NOT sensorHP,
