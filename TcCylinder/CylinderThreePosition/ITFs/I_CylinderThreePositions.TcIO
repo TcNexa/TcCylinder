@@ -55,6 +55,24 @@
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
+    <Property Name="isSensorHP" Id="{f22b693c-5b63-009d-2a56-b6bbf382d488}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY isSensorHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{15c12d3f-f55a-0d54-23b8-d47b8ba741ca}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="isSensorMID" Id="{cddbdb9d-6b95-0fcf-088c-6af6f6057a5c}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY isSensorMID : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1d45cfbf-186b-0292-318f-9d6ae1bdad97}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="isSensorWP" Id="{a7bb8d1b-189b-065d-3512-0b620235b657}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY isSensorWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1c3442e9-342a-06d7-2490-5b73b4852431}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
     <Method Name="moveToHP" Id="{97e7407d-0d73-436c-bc8f-b688daf02e83}">
       <Declaration><![CDATA[METHOD PUBLIC moveToHP
 VAR_INPUT
