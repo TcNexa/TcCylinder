@@ -18,6 +18,8 @@ VAR
 	_timerTimeout				: Tc2_Standard.TON;
 	_timerPositionReached		: Tc2_Standard.TON;
 	_timerSensorsOverlap		: Tc2_Standard.TON;
+	_timerInHP					: Tc2_Standard.TON;
+	_timerInWP					: Tc2_Standard.TON;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -63,16 +65,44 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="_statusHandler" Id="{6e91a2e0-03c3-4bb4-ab50-06d5526f8beb}" FolderPath="Private\">
+    <Method Name="_statusHandler" Id="{c1a5f1bf-5464-0d5f-38a6-089c79bb04e1}" FolderPath="Private\">
       <Declaration><![CDATA[METHOD PROTECTED _statusHandler
 VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_inHP:= valveHP AND (sensorHP OR _Config.notUsedSensorHP);
-_inWP:= valveWP AND (sensorWP OR _Config.notUsedSensorWP);]]></ST>
+        <ST><![CDATA[_timerInHP(
+	IN	:= valveHP AND (_Config.notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _Config.monitorSensorsOverlap),
+	PT	:= _Config.delayTimeAfterReachedHP,
+	Q	=> _inHP);
+_timerInWP(
+	IN	:= valveWP AND (_Config.notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _Config.monitorSensorsOverlap),
+	PT	:= _Config.delayTimeAfterReachedWP,
+	Q	=> _inWP);]]></ST>
       </Implementation>
     </Method>
+    <Property Name="commandHP" Id="{ece8d7e6-b664-02cb-2fc3-a8ef92de59b4}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC commandHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{9c4f164d-bdca-0053-3804-f7ff964c6411}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[commandHP:= valveHP;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="commandWP" Id="{51fc431e-852b-0b2d-059d-091f5c61fc0f}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC commandWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{47a3faeb-6813-0127-1407-65a1be2b2873}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[commandWP:= valveWP;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="Config" Id="{7f80d102-94e8-4c21-ade5-c582818c7e44}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC Config : REFERENCE TO ST_CylinderConfig]]></Declaration>
       <Get Name="Get" Id="{b3f9b48b-2419-4cab-bdae-65994f0db7c7}">

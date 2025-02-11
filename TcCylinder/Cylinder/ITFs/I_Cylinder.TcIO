@@ -4,6 +4,18 @@
     <Declaration><![CDATA[INTERFACE I_Cylinder
 ]]></Declaration>
     <Folder Name="Property" Id="{267c47a5-ae14-0388-13f1-6002b9189ef5}" />
+    <Property Name="commandHP" Id="{b9225664-81c1-0c0d-0213-039829fcca7c}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC commandHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1146a1ac-ab62-07fb-0550-c58514ba95db}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="commandWP" Id="{b291129e-3751-050e-1f84-1653ca37f6fc}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC commandWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{219a9140-9af1-047f-1561-da8ef7ee2ee2}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
     <Property Name="Config" Id="{b46ba132-a766-0960-0cb9-bbfd4e84412d}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC Config : REFERENCE TO ST_CylinderConfig]]></Declaration>
       <Get Name="Get" Id="{8e844b3b-d16d-04a7-2ac0-2c7168239781}">
