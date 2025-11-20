@@ -150,10 +150,6 @@
       <DefaultResolution>TcDeviceBase, * (TcNexa)</DefaultResolution>
       <Namespace>TcNexa_Devices_TcDeviceBase</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="TcDeviceNexaHmi">
-      <DefaultResolution>TcDeviceNexaHmi, * (TcNexa)</DefaultResolution>
-      <Namespace>TcNexa_Devices_Base_TcDeviceNexaHmi</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="TcProcess">
       <DefaultResolution>TcProcess, * (TcNexa)</DefaultResolution>
       <Namespace>TcNexa_Components_TcProcess</Namespace>
@@ -195,9 +191,6 @@
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcDeviceBase">
       <Resolution>TcDeviceBase, * (TcNexa)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="TcDeviceNexaHmi">
-      <Resolution>TcDeviceNexaHmi, * (TcNexa)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcNexaHmi">
       <Resolution>TcNexaHmi, * (TcNexa)</Resolution>

@@ -4,7 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CylinderNexaHmi EXTENDS FB_Cylinder
 VAR
 	(* Hmi *)       			
-	_Hmi						: TcNexa_Devices_Base_TcDeviceNexaHmi.FB_DeviceNexaHmi(deviceType:= 'cylinders');
+	_Hmi						: TcNexa_Devices_TcDeviceBase.FB_DeviceNexaHmi(deviceType:= 'cylinders');
 	_onHmiConnection			: Tc2_Standard.R_TRIG;
 	_isHmiConnected				: BOOL;
 	_commandNameHP				: STRING;
@@ -20,10 +20,10 @@ VAR
 	_message					: STRING(255);
 	_lastMessage				: STRING(255);
 	(* Buttons *)
-	_ButtonHP					: TcNexa_Devices_Base_TcDeviceNexaHmi.FB_DeviceButtonNexaHmi(
+	_ButtonHP					: TcNexa_Devices_TcDeviceBase.FB_DeviceButtonNexaHmi(
 									Hmi			:= _Hmi, 
 									topic		:= 'general/buttons/HP/');
-	_ButtonWP					: TcNexa_Devices_Base_TcDeviceNexaHmi.FB_DeviceButtonNexaHmi(
+	_ButtonWP					: TcNexa_Devices_TcDeviceBase.FB_DeviceButtonNexaHmi(
 									Hmi			:= _Hmi, 
 									topic		:= 'general/buttons/WP/');
 	(* Commands *)
