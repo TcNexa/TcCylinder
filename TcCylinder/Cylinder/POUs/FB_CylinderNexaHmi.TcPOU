@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.13">
+  <POU Name="FB_CylinderNexaHmi" Id="{a06e4a05-335d-41d8-bd6c-a9681a788555}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_CylinderNexaHmi EXTENDS FB_Cylinder
+VAR
+	(* Hmi *)       			
+	_Hmi						: TcNexa_Devices_Base_TcDeviceNexaHmi.FB_DeviceNexaHmi(deviceType:= 'cylinders');
+	_onHmiConnection			: Tc2_Standard.R_TRIG;
+	_isHmiConnected				: BOOL;
+	_commandNameHP				: STRING;
+	_commandNameWP				: STRING;
+	_manualMode					: BOOL;
+	_onResponseError			: Tc2_Standard.R_TRIG;
+	_onResponsePass				: Tc2_Standard.R_TRIG;
+	(* Control VAR *)
+	_lastNotUsedSensorHP		: BOOL;
+	_lastSensorHP				: BOOL;
+	_lastNotUsedSensorWP		: BOOL;
+	_lastSensorWP				: BOOL;
+	_message					: STRING(255);
+	_lastMessage				: STRING(255);
+	(* Buttons *)
+	_ButtonHP					: TcNexa_Devices_Base_TcDeviceNexaHmi.FB_DeviceButtonNexaHmi(
+									Hmi			:= _Hmi, 
+									topic		:= 'general/buttons/HP/');
+	_ButtonWP					: TcNexa_Devices_Base_TcDeviceNexaHmi.FB_DeviceButtonNexaHmi(
+									Hmi			:= _Hmi, 
+									topic		:= 'general/buttons/WP/');
+	(* Commands *)
+	_requestHP					: BOOL;
+	_requestWP					: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Property" Id="{02bde9a1-f084-0783-1fff-3b723a4f65ea}" />
+    <Folder Name="Protected" Id="{6f4f0496-5df3-4fdf-84ef-53779d8cadea}" />
+    <Method Name="_handleButtons" Id="{97794b87-e193-0072-13ea-f292d2ee2590}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED _handleButtons
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
+_ButtonHP.enabled:= NOT _interlockHP AND _manualMode;
+_ButtonHP.focused:= valveHP;
+_ButtonHP.name:= _commandNameHP;
+_ButtonHP.FB_main();
+(*----------------------------------------------------------------------------------------------*)
+_ButtonWP.enabled:= NOT _interlockWP AND _manualMode;
+_ButtonWP.focused:= valveWP;
+_ButtonWP.name:= _commandNameWP;
+_ButtonWP.FB_main();
+(*----------------------------------------------------------------------------------------------*)
+IF NOT _manualMode THEN RETURN; END_IF
+IF _ButtonHP.onTap THEN	_requestHP:= TRUE; END_IF
+IF _ButtonWP.onTap THEN	_requestWP:= TRUE; END_IF
+(*----------------------------------------------------------------------------------------------*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_handleManual" Id="{7761fac9-f156-0d0e-1a07-34609e03ce5e}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED _handleManual
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _manualMode THEN
+	_requestHP:= FALSE;
+	_requestWP:= FALSE;
+	_message:= 'Not in manual mode';
+	RETURN;
+ELSIF _interlockHP AND NOT _inHP THEN
+	_message:= _interlockMessageHP;
+ELSIF _interlockWP AND NOT _inWP THEN
+	_message:= _interlockMessageWP;
+ELSE
+	_message:= '';
+END_IF
+
+(* HP *)
+IF _requestHP THEN
+	moveToHP(Response:= _InternalResponse);
+	_requestHP:= FALSE;
+END_IF
+(* HP *)
+IF _requestWP THEN
+	moveToWP(Response:= _InternalResponse);
+	_requestWP:= FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_onConnection" Id="{66b7bbd5-26b9-4e3b-9129-d1227eacf7a1}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED _onConnection
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _onHmiConnection.Q THEN RETURN; END_IF
+
+(* Publish *)
+_Hmi.publish(
+	topic	:= 'general/sensorTagHP',
+	payload	:= _sensorTagHP);
+_Hmi.publish(
+	topic	:= 'general/sensorTagWP',
+	payload	:= _sensorTagWP);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_publishTopics" Id="{f423ba49-c089-4fda-9965-66ea711d1b7c}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD PROTECTED _publishTopics
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _isHmiConnected THEN RETURN; END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_lastNotUsedSensorHP <> _notUsedSensorHP) OR _onHmiConnection.Q THEN
+	_lastNotUsedSensorHP:= _notUsedSensorHP;
+	_Hmi.publish(
+		topic	:= 'general/notUsedSensorHP',
+		payload	:= BOOL_TO_STRING(_notUsedSensorHP));
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_lastSensorHP <> sensorHP) OR _onHmiConnection.Q THEN
+	_lastSensorHP:= sensorHP;
+	_Hmi.publish(
+		topic	:= 'general/sensorHP',
+		payload	:= BOOL_TO_STRING(sensorHP));
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_lastNotUsedSensorWP <> _notUsedSensorWP) OR _onHmiConnection.Q THEN
+	_lastNotUsedSensorWP:= _notUsedSensorWP;
+	_Hmi.publish(
+		topic	:= 'general/notUsedSensorWP',
+		payload	:= BOOL_TO_STRING(_notUsedSensorWP));
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_lastSensorWP <> sensorWP) OR _onHmiConnection.Q THEN
+	_lastSensorWP:= sensorWP;
+	_Hmi.publish(
+		topic	:= 'general/sensorWP',
+		payload	:= BOOL_TO_STRING(sensorWP));
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_message <> _lastMessage) OR _onHmiConnection.Q THEN
+	_lastMessage:= _message;
+	_Hmi.publish(
+		topic	:= 'general/message',
+		payload	:= _message);
+END_IF
+(*----------------------------------------------------------------------------------------------*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{89db22b4-7f64-0e0e-2f77-f5ba4ba17cbf}" FolderPath="Protected\">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	name			: STRING;
+	tag				: STRING;
+	sensorTagHP		: STRING;
+	sensorTagWP		: STRING;
+	commandNameHP	: STRING;
+	commandNameWP	: STRING;
+	cellTag			: STRING;
+	stationTag		: STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._commandNameHP:= commandNameHP;
+THIS^._commandNameWP:= commandNameWP;
+
+THIS^._Hmi.cellTag:= cellTag;
+THIS^._Hmi.stationTag:= stationTag;
+THIS^._Hmi.deviceTag:= tag;
+THIS^._Hmi.deviceName:= name;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_main" Id="{7288df59-cdb5-4cea-a1e3-32fbb9d17051}">
+      <Declaration><![CDATA[METHOD PUBLIC FB_main
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.FB_main();
+_Hmi.FB_main();
+_isHmiConnected:= _Hmi.isConnected;
+_onHmiConnection(CLK:= _isHmiConnected);
+
+_onConnection();
+_publishTopics();
+_handleButtons();
+_handleManual();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="hostName" Id="{7e5636fe-132a-0acc-1ae3-2ce97c5d5e86}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC hostName : Tc2_System.T_MaxString]]></Declaration>
+      <Get Name="Get" Id="{7ba73824-d409-008c-05f0-177e106229c1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[hostName:= _Hmi.hostName;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{5bc415cc-d214-0cda-1aae-cee1fbf8fc6f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_Hmi.hostName:= hostName;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="hostPort" Id="{14cbd58c-5849-0244-3c79-cc8263901a1f}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC hostPort : UINT]]></Declaration>
+      <Get Name="Get" Id="{7d30d306-3ede-0146-0783-d5b9c74d5ee9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[hostPort:= _Hmi.hostPort;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{fed14df9-ad74-08c3-2cc2-5702d4cb36cf}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_Hmi.hostPort:= hostPort;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="manualMode" Id="{302ce693-5704-0317-16e6-0b6e70ea6c09}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY manualMode : BOOL]]></Declaration>
+      <Get Name="Get" Id="{1598543b-157f-0471-2ca8-d160363d5541}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[manualMode:= _manualMode;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{b370ce93-280e-0394-1067-40a0982f23ac}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_manualMode:= manualMode;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

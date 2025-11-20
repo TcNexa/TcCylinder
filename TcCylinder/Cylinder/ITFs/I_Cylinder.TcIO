@@ -4,53 +4,80 @@
     <Declaration><![CDATA[INTERFACE I_Cylinder
 ]]></Declaration>
     <Folder Name="Property" Id="{267c47a5-ae14-0388-13f1-6002b9189ef5}" />
-    <Property Name="commandHP" Id="{b9225664-81c1-0c0d-0213-039829fcca7c}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY PUBLIC commandHP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{1146a1ac-ab62-07fb-0550-c58514ba95db}">
+    <Property Name="delayTimeAfterReachedHP" Id="{fc60306e-1d25-07b8-2f41-0c1155cb85e4}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY delayTimeAfterReachedHP : TIME]]></Declaration>
+      <Get Name="Get" Id="{d28d7299-deb5-02c3-3ed8-bb02a69fbd6e}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
+      <Set Name="Set" Id="{4b4c3fc8-0b1b-0f3e-006e-2945b0b2f22f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
     </Property>
-    <Property Name="commandWP" Id="{b291129e-3751-050e-1f84-1653ca37f6fc}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY PUBLIC commandWP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{219a9140-9af1-047f-1561-da8ef7ee2ee2}">
+    <Property Name="delayTimeAfterReachedWP" Id="{560c36ae-0336-0561-08e9-c13567076cd1}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY delayTimeAfterReachedWP : TIME]]></Declaration>
+      <Get Name="Get" Id="{3ccaa96f-e995-09c3-2608-191c276798e7}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
-    </Property>
-    <Property Name="Config" Id="{b46ba132-a766-0960-0cb9-bbfd4e84412d}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY PUBLIC Config : REFERENCE TO ST_CylinderConfig]]></Declaration>
-      <Get Name="Get" Id="{8e844b3b-d16d-04a7-2ac0-2c7168239781}">
+      <Set Name="Set" Id="{5c725605-e158-0463-0450-a679cbe14478}">
         <Declaration><![CDATA[]]></Declaration>
-      </Get>
+      </Set>
     </Property>
-    <Property Name="inHP" Id="{ce6681be-fc5f-09c3-3fc0-85a7209c16b4}" FolderPath="Property\">
+    <Method Name="fill" Id="{33ec8077-617b-0751-14af-9288b39bc749}">
+      <Declaration><![CDATA[METHOD fill
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="inHP" Id="{7fc6b109-4c17-0f74-1f91-bfe772771f6e}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC inHP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{04ed824b-7688-06b1-019a-d2f3f5ed1bf2}">
+      <Get Name="Get" Id="{0febcec0-fe13-095e-389b-1bf0ba6d9f3a}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Property Name="interlockHP" Id="{fd0d8848-d3ef-091c-185c-4c68ca718b60}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY PUBLIC interlockHP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{1661904f-48dd-04e2-3646-46196c52b03e}">
+    <Property Name="interlockMessageHP" Id="{f1d186f1-b347-0479-1de5-1d214db53257}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY interlockMessageHP : STRING(255)]]></Declaration>
+      <Get Name="Get" Id="{583d434f-99e0-07a3-2727-6cf32db4820e}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
-      <Set Name="Set" Id="{c4fb899e-f24d-0280-2423-dd50add5d6a8}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
     </Property>
-    <Property Name="interlockWP" Id="{29c5bf88-12f3-0780-244e-5c52ccd6cb64}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY PUBLIC interlockWP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{464f48ca-90c5-097a-0ea8-d0d520428dc5}">
+    <Property Name="interlockMessageWP" Id="{97b17812-fe17-070a-3397-df80c1df348b}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY interlockMessageWP : STRING(255)]]></Declaration>
+      <Get Name="Get" Id="{65976726-eaf2-0b05-0dae-db38e80b7ebd}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
-      <Set Name="Set" Id="{4a56ad82-65b4-024d-2347-d4c4c8072e1d}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
     </Property>
-    <Property Name="inWP" Id="{367ed73f-e207-0005-06f3-b317c58a433c}" FolderPath="Property\">
+    <Property Name="inWP" Id="{f04e20b6-a035-0f73-1ea1-4d109a16da95}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC inWP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{0e605c16-62b2-008c-28a9-4807a4b8c16c}">
+      <Get Name="Get" Id="{afbd79aa-1f23-0eb3-04a4-731c69d80fac}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
+    </Property>
+    <Property Name="monitorMovementTimeout" Id="{92445ae7-5795-0235-10cf-7a358e2fa8fa}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY monitorMovementTimeout : BOOL]]></Declaration>
+      <Get Name="Get" Id="{83cf16ba-34a9-089c-38d0-2dec6946bac5}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{9212759e-2d20-083b-3f10-8f9568dca510}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="monitorSensorsOverlap" Id="{39430df8-b8fb-0a57-3acc-d754d3dbca92}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY monitorSensorsOverlap : BOOL]]></Declaration>
+      <Get Name="Get" Id="{6fad0bab-fae5-0ed2-1302-7cf37c678764}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{daf9efc5-33f9-0c16-275b-0f8f39af406b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="movementTimeout" Id="{e16a4c43-507d-097a-13c0-bfa35ae5658c}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY movementTimeout : TIME]]></Declaration>
+      <Get Name="Get" Id="{9f11280f-9700-080e-194f-91813fb1b852}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{eb2a27bb-64af-022f-295b-75092f78eb9f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
     </Property>
     <Method Name="moveToHP" Id="{501d1b69-466f-0a60-3f90-253aff92e997}">
       <Declaration><![CDATA[METHOD PUBLIC moveToHP
@@ -66,11 +93,38 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Property Name="notUsedSensorHP" Id="{a83fc0f9-036f-0f7f-2139-ba83b6b7c306}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY notUsedSensorHP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{c7827522-242e-00b9-20f6-3d3426ad9e01}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{ec13cece-a5de-01da-2de8-090ec3d0e38a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="notUsedSensorWP" Id="{fb0bcea5-5d93-0321-32eb-5e25af79388e}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY notUsedSensorWP : BOOL]]></Declaration>
+      <Get Name="Get" Id="{13e3f472-9b88-0727-175a-c40f7d6e423f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{28a8aa1e-8fe8-0628-04eb-07f28396b057}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
     <Method Name="off" Id="{11592de3-b27a-0ee4-1cd7-8a6e98a648bd}">
       <Declaration><![CDATA[METHOD PUBLIC off
 VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
+    <Property Name="sensorsOverlapTimeout" Id="{40e1caec-57d4-026c-28c4-d33a2a4ad75f}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY sensorsOverlapTimeout : TIME]]></Declaration>
+      <Get Name="Get" Id="{af68bc77-08c7-0721-2ab6-0f19ec293e34}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{e5d5a6b7-075a-0eb2-3929-b03957f394d1}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
   </Itf>
 </TcPlcObject>

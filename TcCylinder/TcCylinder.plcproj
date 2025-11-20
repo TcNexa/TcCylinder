@@ -8,7 +8,7 @@
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>TcCylinder</Name>
-    <ProgramVersion>3.1.4024.0</ProgramVersion>
+    <ProgramVersion>3.1.4026.19</ProgramVersion>
     <Application>{93204dda-378d-48bd-8cd9-00d6242d35bf}</Application>
     <TypeSystem>{307f629a-18d5-4969-a64c-253d4578817c}</TypeSystem>
     <Implicit_Task_Info>{dcb2fb30-18fc-4b73-8c18-9c72119493c5}</Implicit_Task_Info>
@@ -18,7 +18,7 @@
     <Company>TcNexa</Company>
     <Released>false</Released>
     <Title>TcCylinder</Title>
-    <ProjectVersion>1.0.1.0</ProjectVersion>
+    <ProjectVersion>2.0.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{97b7b969-1a00-4526-9b48-343321aa96be}</Id>
@@ -104,27 +104,16 @@
     <DefaultNamespace>TcNexa_Devices_Cylinder_TcCylinder</DefaultNamespace>
     <Author>ATI Software Engineering</Author>
     <CombineIds>true</CombineIds>
+    <GlobalVersionStructureIncluded>true</GlobalVersionStructureIncluded>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CylinderThreePosition\DUTs\ST_CylinderThreePositionConfig.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CylinderThreePosition\ITFs\I_CylinderThreePositions.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CylinderThreePosition\POUs\FB_CylinderThreePositions.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Cylinder\DUTs\ST_CylinderConfig.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Cylinder\ITFs\I_Cylinder.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Cylinder\POUs\FB_Cylinder.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ITFs\I_Cylinder.TcIO">
+    <Compile Include="Cylinder\POUs\FB_CylinderNexaHmi.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
@@ -138,15 +127,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CylinderThreePosition\ITFs" />
-    <Folder Include="CylinderThreePosition\DUTs" />
-    <Folder Include="CylinderThreePosition\POUs" />
-    <Folder Include="Cylinder\DUTs" />
     <Folder Include="Cylinder\ITFs" />
     <Folder Include="Cylinder\POUs" />
     <Folder Include="Cylinder" />
-    <Folder Include="CylinderThreePosition" />
-    <Folder Include="ITFs" />
     <Folder Include="Tests" />
     <Folder Include="Version" />
   </ItemGroup>
@@ -167,15 +150,64 @@
       <DefaultResolution>TcDeviceBase, * (TcNexa)</DefaultResolution>
       <Namespace>TcNexa_Devices_TcDeviceBase</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="TcDeviceNexaHmi">
+      <DefaultResolution>TcDeviceNexaHmi, * (TcNexa)</DefaultResolution>
+      <Namespace>TcNexa_Devices_Base_TcDeviceNexaHmi</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="TcProcess">
       <DefaultResolution>TcProcess, * (TcNexa)</DefaultResolution>
       <Namespace>TcNexa_Components_TcProcess</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TcUtilities">
+      <DefaultResolution>TcUtilities, * (TcNexa)</DefaultResolution>
+      <Namespace>TcNexa_Components_TcUtilities</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="TcCylinder.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="Tc2_Standard">
+      <Resolution>Tc2_Standard, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_System">
+      <Resolution>Tc2_System, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_Utilities">
+      <Resolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_DynamicMemory">
+      <Resolution>Tc3_DynamicMemory, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_EventLogger">
+      <Resolution>Tc3_EventLogger, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_IotBase">
+      <Resolution>Tc3_IotBase, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_JsonXml">
+      <Resolution>Tc3_JsonXml, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_Module">
+      <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TcDeviceBase">
+      <Resolution>TcDeviceBase, * (TcNexa)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TcDeviceNexaHmi">
+      <Resolution>TcDeviceNexaHmi, * (TcNexa)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TcNexaHmi">
+      <Resolution>TcNexaHmi, * (TcNexa)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TcProcess">
+      <Resolution>TcProcess, * (TcNexa)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="TcUtilities">
+      <Resolution>TcUtilities, * (TcNexa)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

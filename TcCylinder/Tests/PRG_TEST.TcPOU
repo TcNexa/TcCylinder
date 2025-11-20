@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.13">
   <POU Name="PRG_TEST" Id="{58c96f65-a512-401a-b154-ddc116720dca}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM PRG_TEST
 VAR
 	_test : FB_Cylinder;
-	test2 : FB_CylinderThreePositions;
+	_test1	: FB_NexaHmi_Cylinder;
 END_VAR
 ]]></Declaration>
     <Implementation>
