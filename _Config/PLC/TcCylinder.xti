@@ -1,12 +1,103 @@
 <?xml version="1.0"?>
-<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.42" ClassName="CNestedPlcProjDef">
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.20" ClassName="CNestedPlcProjDef">
 	<Project GUID="{9124E31E-97B2-4425-87AC-0F83295C9CD4}" Name="TcCylinder" PrjFilePath="..\..\TcCylinder\TcCylinder.plcproj" TmcFilePath="..\..\TcCylinder\TcCylinder.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-		<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="TcCylinder\TcCylinder.tmc" TmcHash="{BCE5584A-6644-954C-CA1A-A32E1032C372}">
+		<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{4DC958F0-1449-87B5-157F-F9C89B4193C2}" TmcPath="TcCylinder\TcCylinder.tmc">
 			<Name>TcCylinder Instance</Name>
 			<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+			<Vars VarGrpType="2" AreaNo="1">
+				<Name>PlcTask Outputs</Name>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_BOTHSENSORACTIVE_ERROR___CYLINDER.valveHP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_BOTHSENSORACTIVE_ERROR___CYLINDER.valveWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_MOVEMENTINTERLOCKED_ERROR___CYLINDER.valveHP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_MOVEMENTINTERLOCKED_ERROR___CYLINDER.valveWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTREACHED_TIMEOUT___CYLINDER.valveHP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTREACHED_TIMEOUT___CYLINDER.valveWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTUSED_OK___CYLINDER.valveHP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTUSED_OK___CYLINDER.valveWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORREACHED_OK___CYLINDER.valveHP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORREACHED_OK___CYLINDER.valveWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+			</Vars>
+			<Vars VarGrpType="1">
+				<Name>PlcTask Inputs</Name>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_BOTHSENSORACTIVE_ERROR___CYLINDER.sensorHP</Name>
+					<Comment><![CDATA[----------------------------------------------------------------------------------------------]]></Comment>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_BOTHSENSORACTIVE_ERROR___CYLINDER.sensorWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_MOVEMENTINTERLOCKED_ERROR___CYLINDER.sensorHP</Name>
+					<Comment><![CDATA[----------------------------------------------------------------------------------------------]]></Comment>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_MOVEMENTINTERLOCKED_ERROR___CYLINDER.sensorWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTREACHED_TIMEOUT___CYLINDER.sensorHP</Name>
+					<Comment><![CDATA[----------------------------------------------------------------------------------------------]]></Comment>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTREACHED_TIMEOUT___CYLINDER.sensorWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTUSED_OK___CYLINDER.sensorHP</Name>
+					<Comment><![CDATA[----------------------------------------------------------------------------------------------]]></Comment>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORNOTUSED_OK___CYLINDER.sensorWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORREACHED_OK___CYLINDER.sensorHP</Name>
+					<Comment><![CDATA[----------------------------------------------------------------------------------------------]]></Comment>
+					<Type>BOOL</Type>
+				</Var>
+				<Var>
+					<Name>PRG_TEST._test.__FB_CYLINDER_TEST__TESTMOVETOHP_SENSORREACHED_OK___CYLINDER.sensorWP</Name>
+					<Type>BOOL</Type>
+				</Var>
+			</Vars>
 			<Contexts>
 				<Context>
-					<Id NeedCalleeCall="true">0</Id>
+					<Id>0</Id>
 					<Name>PlcTask</Name>
 					<ManualConfig>
 						<OTCID>#x02010030</OTCID>

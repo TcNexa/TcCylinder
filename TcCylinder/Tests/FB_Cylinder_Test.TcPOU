@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_Cylinder_Test" Id="{f611bdec-4323-4987-9a1e-cbe1197a813f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Cylinder_Test EXTENDS TcUnit.FB_TestSuite
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[testMoveToHP_BothSensorActive_Error();
+testMoveToHP_MovementInterlocked_Error();
+testMoveToHP_SensorNotReached_Timeout();
+testMoveToHP_SensorNotUsed_Ok();
+testMoveToHP_SensorReached_Ok();]]></ST>
+    </Implementation>
+    <Method Name="testMoveToHP_BothSensorActive_Error" Id="{c96d983a-577b-0922-115d-1beb374b1927}">
+      <Declaration><![CDATA[METHOD PROTECTED testMoveToHP_BothSensorActive_Error
+VAR_INST
+	_testTimeout		: Tc2_Standard.TON;
+	_Cylinder 			: FB_Cylinder	(name		:= 'Cylinder',
+										tag			:= 'C1',
+										sensorTagHP	:= 'B1',
+										sensorTagWP	:= 'B2');
+	_Response			: TcNexa_Components_TcProcess.FB_MethodResponse;
+	_timerDelay			: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED(TestName:= 'TestMoveToHP_BothSensorActive_Error') THEN
+	// Timeout if the movement is not executed right
+	_testTimeout(IN:= TRUE, PT:= T#10S);
+	_timerDelay(IN:= TRUE, PT:= T#1S);
+	// Cylinder call
+	_Cylinder.delayTimeAfterReachedHP:= T#1S;	
+	_Cylinder.FB_main();
+	_Cylinder.moveToHP(Response:= _Response);
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr:= ADR(_Cylinder.sensorHP), Value:= _timerDelay.Q);
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr:= ADR(_Cylinder.sensorWP), Value:= TRUE);
+	// Wait result
+	IF _testTimeout.Q OR _Cylinder.inHP OR NOT _Response.busy THEN
+		AssertFalse(
+			Condition	:= _Cylinder.inHP,
+			Message		:= 'inHP not FALSE');
+		AssertFalse(
+			Condition	:= _Cylinder.inWP,
+			Message		:= 'inWP not FALSE');
+		AssertFalse(
+			Condition	:= _Response.busy,
+			Message		:= 'busy not FALSE');
+		AssertTrue(
+			Condition	:= _Response.error,
+			Message		:= 'error not TRUE');
+			
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="testMoveToHP_MovementInterlocked_Error" Id="{23247f98-9d90-0526-1b9a-f6a83be73e31}">
+      <Declaration><![CDATA[METHOD PROTECTED testMoveToHP_MovementInterlocked_Error
+VAR_INST
+	_testTimeout		: Tc2_Standard.TON;
+	_Cylinder 			: FB_Cylinder	(name		:= 'Cylinder',
+										tag			:= 'C1',
+										sensorTagHP	:= 'B1',
+										sensorTagWP	:= 'B2');
+	_Response			: TcNexa_Components_TcProcess.FB_MethodResponse;
+	_timerDelay			: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED(TestName:= 'testMoveToHP_MovementInterlocked_Error') THEN
+	// Timeout if the movement is not executed right
+	_testTimeout(IN:= TRUE, PT:= T#10S);
+	_timerDelay(IN:= TRUE, PT:= T#1S);
+	// Cylinder call
+	_Cylinder.addInterlockHP(condition:= TRUE, message:= '');
+	_Cylinder.FB_main();
+	_Cylinder.moveToHP(Response:= _Response);
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr:= ADR(_Cylinder.sensorHP), Value:= _timerDelay.Q);
+	// Wait result
+	IF _testTimeout.Q OR _Cylinder.inHP OR NOT _Response.busy THEN
+		AssertFalse(
+			Condition	:= _Cylinder.inHP,
+			Message		:= 'inHP not FALSE');
+		AssertFalse(
+			Condition	:= _Cylinder.inWP,
+			Message		:= 'inWP not FALSE');
+		AssertFalse(
+			Condition	:= _Response.busy,
+			Message		:= 'busy not FALSE');
+		AssertTrue(
+			Condition	:= _Response.error,
+			Message		:= 'error not TRUE');
+			
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="testMoveToHP_SensorNotReached_Timeout" Id="{f0644be4-20a9-02df-2aef-5d1ab6f9eba6}">
+      <Declaration><![CDATA[METHOD PROTECTED testMoveToHP_SensorNotReached_Timeout
+VAR_INST
+	_testTimeout		: Tc2_Standard.TON;
+	_Cylinder 			: FB_Cylinder	(name		:= 'Cylinder',
+										tag			:= 'C1',
+										sensorTagHP	:= 'B1',
+										sensorTagWP	:= 'B2');
+	_Response			: TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED(TestName:= 'TestMoveToHP_SensorNotReached_Timeout') THEN
+	// Timeout if the movement is not executed right
+	_testTimeout(IN:= TRUE, PT:= T#10S);
+	// Cylinder call
+	_Cylinder.FB_main();
+	_Cylinder.moveToHP(Response:= _Response);
+	// Wait result
+	IF _testTimeout.Q OR _Cylinder.inHP OR NOT _Response.busy THEN
+		AssertFalse(
+			Condition	:= _Cylinder.inHP,
+			Message		:= 'inHP not FALSE');
+		AssertFalse(
+			Condition	:= _Cylinder.inWP,
+			Message		:= 'inWP not FALSE');
+		AssertFalse(
+			Condition	:= _Response.busy,
+			Message		:= 'busy not FALSE');
+		AssertTrue(
+			Condition	:= _Response.error,
+			Message		:= 'error not TRUE');
+			
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="testMoveToHP_SensorNotUsed_Ok" Id="{cae04e04-fcd3-06a6-1c88-7ef205971d01}">
+      <Declaration><![CDATA[METHOD PROTECTED testMoveToHP_SensorNotUsed_Ok
+VAR_INST
+	_testTimeout		: Tc2_Standard.TON;
+	_Cylinder 			: FB_Cylinder	(name		:= 'Cylinder',
+										tag			:= 'C1',
+										sensorTagHP	:= '',
+										sensorTagWP	:= 'B2');
+	_Response			: TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED(TestName:= 'testMoveToHP_SensorNotUsed_Ok') THEN
+	// Timeout if the movement is not executed right
+	_testTimeout(IN:= TRUE, PT:= T#10S);
+	// Cylinder call
+	_Cylinder.delayTimeAfterReachedHP:= T#1S;
+	_Cylinder.FB_main();
+	_Cylinder.moveToHP(Response:= _Response);
+	// Wait result
+	IF _testTimeout.Q OR _Cylinder.inHP OR NOT _Response.busy THEN
+		AssertTrue(
+			Condition	:= _Cylinder.inHP,
+			Message		:= 'inHP not TRUE');
+		AssertFalse(
+			Condition	:= _Cylinder.inWP,
+			Message		:= 'inWP not FALSE');
+		AssertFalse(
+			Condition	:= _Response.busy,
+			Message		:= 'busy not FALSE');
+		AssertFalse(
+			Condition	:= _Response.error,
+			Message		:= 'error not FALSE');
+			
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="testMoveToHP_SensorReached_Ok" Id="{20c59df5-acc8-4cd6-8d73-fe0f6e62b740}">
+      <Declaration><![CDATA[METHOD PROTECTED testMoveToHP_SensorReached_Ok
+VAR_INST
+	_testTimeout		: Tc2_Standard.TON;
+	_Cylinder 			: FB_Cylinder	(name		:= 'Cylinder',
+										tag			:= 'C1',
+										sensorTagHP	:= 'B1',
+										sensorTagWP	:= 'B2');
+	_Response			: TcNexa_Components_TcProcess.FB_MethodResponse;
+	_timerDelay			: Tc2_Standard.TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TcUnit.TEST_ORDERED(TestName:= 'TestMoveToHP_SensorReached_Ok') THEN
+	// Timeout if the movement is not executed right
+	_testTimeout(IN:= TRUE, PT:= T#10S);
+	_timerDelay(IN:= TRUE, PT:= T#1S);
+	// Cylinder call
+	_Cylinder.delayTimeAfterReachedHP:= T#1S;	
+	_Cylinder.FB_main();
+	_Cylinder.moveToHP(Response:= _Response);
+	TcUnit.WRITE_PROTECTED_BOOL(Ptr:= ADR(_Cylinder.sensorHP), Value:= _timerDelay.Q);
+	// Wait result
+	IF _testTimeout.Q OR _Cylinder.inHP OR NOT _Response.busy THEN
+		AssertTrue(
+			Condition	:= _Cylinder.inHP,
+			Message		:= 'inHP not TRUE');
+		AssertFalse(
+			Condition	:= _Cylinder.inWP,
+			Message		:= 'inWP not FALSE');
+		AssertFalse(
+			Condition	:= _Response.busy,
+			Message		:= 'busy not FALSE');
+		AssertFalse(
+			Condition	:= _Response.error,
+			Message		:= 'error not FALSE');
+		AssertEquals_TIME(
+			Expected	:= _timerDelay.ET + _Cylinder.delayTimeAfterReachedHP + T#10MS,
+			Actual		:= _testTimeout.ET,
+			Message		:= 'delayTimeAfterReachedHP missmatch');
+			
+		TcUnit.TEST_FINISHED();
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
   <POU Name="FB_CylinderNexaHmi" Id="{a06e4a05-335d-41d8-bd6c-a9681a788555}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CylinderNexaHmi EXTENDS FB_Cylinder
 VAR
@@ -12,6 +12,8 @@ VAR
 	_manualMode					: BOOL;
 	_onResponseError			: Tc2_Standard.R_TRIG;
 	_onResponsePass				: Tc2_Standard.R_TRIG;
+	_interlockHPforOtherDevices	: STRING;
+	_interlockWPforOtherDevices	: STRING;
 	(* Control VAR *)
 	_lastNotUsedSensorHP		: BOOL;
 	_lastSensorHP				: BOOL;
@@ -68,26 +70,27 @@ END_VAR
         <ST><![CDATA[IF NOT _manualMode THEN
 	_requestHP:= FALSE;
 	_requestWP:= FALSE;
-	_message:= 'Not in manual mode';
-	RETURN;
+	_message:= 'Movement blocked: Not in manual mode';
 ELSIF _interlockHP AND NOT _inHP THEN
-	_message:= _interlockMessageHP;
+	_message:= Tc2_Standard.CONCAT(STR1:= _commandNameHP, ' blocked: ');
+	_message:= Tc2_Standard.CONCAT(STR1:= _message, _interlockMessageHP);
 ELSIF _interlockWP AND NOT _inWP THEN
-	_message:= _interlockMessageWP;
+	_message:= Tc2_Standard.CONCAT(STR1:= _commandNameWP, ' blocked: ');
+	_message:= Tc2_Standard.CONCAT(STR1:= _message, _interlockMessageWP);
 ELSE
 	_message:= '';
+	(* HP *)
+	IF _requestHP THEN
+		moveToHP(Response:= _InternalResponse);
+		_requestHP:= FALSE;
+	END_IF
+	(* HP *)
+	IF _requestWP THEN
+		moveToWP(Response:= _InternalResponse);
+		_requestWP:= FALSE;
+	END_IF
 END_IF
-
-(* HP *)
-IF _requestHP THEN
-	moveToHP(Response:= _InternalResponse);
-	_requestHP:= FALSE;
-END_IF
-(* HP *)
-IF _requestWP THEN
-	moveToWP(Response:= _InternalResponse);
-	_requestWP:= FALSE;
-END_IF]]></ST>
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="_onConnection" Id="{66b7bbd5-26b9-4e3b-9129-d1227eacf7a1}" FolderPath="Protected\">
@@ -174,7 +177,14 @@ THIS^._commandNameWP:= commandNameWP;
 THIS^._Hmi.cellTag:= cellTag;
 THIS^._Hmi.stationTag:= stationTag;
 THIS^._Hmi.deviceTag:= tag;
-THIS^._Hmi.deviceName:= name;]]></ST>
+THIS^._Hmi.deviceName:= name;
+
+_interlockHPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _nameTag, STR2:= ' not in ');
+_interlockHPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _interlockHPforOtherDevices, STR2:= _commandNameHP);
+_interlockHPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _interlockHPforOtherDevices, STR2:= ' position');
+_interlockWPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _nameTag, STR2:= ' not in ');
+_interlockWPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _interlockWPforOtherDevices, STR2:= _commandNameWP);
+_interlockWPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _interlockWPforOtherDevices, STR2:= ' position');]]></ST>
       </Implementation>
     </Method>
     <Method Name="FB_main" Id="{7288df59-cdb5-4cea-a1e3-32fbb9d17051}">
@@ -231,6 +241,28 @@ END_VAR
           <ST><![CDATA[_Hmi.hostPort:= hostPort;]]></ST>
         </Implementation>
       </Set>
+    </Property>
+    <Property Name="interlockMessageHP" Id="{38f74a37-690f-0b2c-3988-cd0be520935e}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY interlockMessageHP : STRING(255)]]></Declaration>
+      <Get Name="Get" Id="{2ab42182-b181-0ed9-3c98-ac94fe5e55c6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[interlockMessageHP:= _interlockHPforOtherDevices;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="interlockMessageWP" Id="{73b1be68-b97c-03d8-2c32-42db0d213a42}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY interlockMessageWP : STRING(255)]]></Declaration>
+      <Get Name="Get" Id="{99159a4b-3f50-0de6-03a9-e9eecf9304ad}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[interlockMessageWP:= _interlockWPforOtherDevices;]]></ST>
+        </Implementation>
+      </Get>
     </Property>
     <Property Name="manualMode" Id="{302ce693-5704-0317-16e6-0b6e70ea6c09}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY manualMode : BOOL]]></Declaration>

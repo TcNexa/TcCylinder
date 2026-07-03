@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
   <Itf Name="I_Cylinder" Id="{1d011b56-0512-0942-24a1-6da9282bd9a9}">
     <Declaration><![CDATA[INTERFACE I_Cylinder
 ]]></Declaration>
@@ -34,32 +34,11 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Property Name="interlockMessageHP" Id="{f1d186f1-b347-0479-1de5-1d214db53257}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY interlockMessageHP : STRING(255)]]></Declaration>
-      <Get Name="Get" Id="{583d434f-99e0-07a3-2727-6cf32db4820e}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-    </Property>
-    <Property Name="interlockMessageWP" Id="{97b17812-fe17-070a-3397-df80c1df348b}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY interlockMessageWP : STRING(255)]]></Declaration>
-      <Get Name="Get" Id="{65976726-eaf2-0b05-0dae-db38e80b7ebd}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-    </Property>
     <Property Name="inWP" Id="{f04e20b6-a035-0f73-1ea1-4d109a16da95}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC inWP : BOOL]]></Declaration>
       <Get Name="Get" Id="{afbd79aa-1f23-0eb3-04a4-731c69d80fac}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
-    </Property>
-    <Property Name="monitorMovementTimeout" Id="{92445ae7-5795-0235-10cf-7a358e2fa8fa}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY monitorMovementTimeout : BOOL]]></Declaration>
-      <Get Name="Get" Id="{83cf16ba-34a9-089c-38d0-2dec6946bac5}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{9212759e-2d20-083b-3f10-8f9568dca510}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
     </Property>
     <Property Name="monitorSensorsOverlap" Id="{39430df8-b8fb-0a57-3acc-d754d3dbca92}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY monitorSensorsOverlap : BOOL]]></Declaration>
@@ -93,24 +72,6 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Property Name="notUsedSensorHP" Id="{a83fc0f9-036f-0f7f-2139-ba83b6b7c306}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY notUsedSensorHP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{c7827522-242e-00b9-20f6-3d3426ad9e01}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{ec13cece-a5de-01da-2de8-090ec3d0e38a}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
-    </Property>
-    <Property Name="notUsedSensorWP" Id="{fb0bcea5-5d93-0321-32eb-5e25af79388e}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY notUsedSensorWP : BOOL]]></Declaration>
-      <Get Name="Get" Id="{13e3f472-9b88-0727-175a-c40f7d6e423f}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{28a8aa1e-8fe8-0628-04eb-07f28396b057}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
-    </Property>
     <Method Name="off" Id="{11592de3-b27a-0ee4-1cd7-8a6e98a648bd}">
       <Declaration><![CDATA[METHOD PUBLIC off
 VAR_INPUT
