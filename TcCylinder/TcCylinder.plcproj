@@ -18,7 +18,7 @@
     <Company>TcNexa</Company>
     <Released>false</Released>
     <Title>TcCylinder</Title>
-    <ProjectVersion>2.0.1</ProjectVersion>
+    <ProjectVersion>2.1.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{97b7b969-1a00-4526-9b48-343321aa96be}</Id>
@@ -113,7 +113,13 @@
     <Compile Include="Cylinder\POUs\FB_Cylinder.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Cylinder\POUs\FB_LiftCylinderBosch.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Cylinder\POUs\FB_CylinderNexaHmi.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Cylinder\POUs\FB_LiftCylinderNexaHmi_Bosch.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">

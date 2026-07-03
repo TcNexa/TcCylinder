@@ -70,15 +70,17 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_interlockHP:= _newStateInterlockHP;
+        <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
+_interlockHP:= _newStateInterlockHP;
 _interlockMessageHP:= _newStateInterlockMsgHP;
 _newStateInterlockHP:= FALSE;
 _newStateInterlockMsgHP:= '';
-
+(*----------------------------------------------------------------------------------------------*)
 _interlockWP:= _newStateInterlockWP;
 _interlockMessageWP:= _newStateInterlockMsgWP;
 _newStateInterlockWP:= FALSE;
-_newStateInterlockMsgWP:= '';]]></ST>
+_newStateInterlockMsgWP:= '';
+(*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
     <Method Name="_handlePositionStatus" Id="{52787e74-8e74-0d86-0e07-7d2e53fe0eb1}" FolderPath="Internal\">
@@ -87,22 +89,25 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_timerInHP(
+        <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
+_timerInHP(
 	IN	:= valveHP AND (_notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _monitorSensorsOverlap),
 	PT	:= _delayTimeAfterReachedHP,
 	Q	=> _inHP);
+(*----------------------------------------------------------------------------------------------*)
 _timerInWP(
 	IN	:= valveWP AND (_notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _monitorSensorsOverlap),
 	PT	:= _delayTimeAfterReachedWP,
 	Q	=> _inWP);
-
+(*----------------------------------------------------------------------------------------------*)
 _timerTimeout(
 	IN:= (_calledMethod <> ''),
 	PT:= _movementTimeout);
-	
+(*----------------------------------------------------------------------------------------------*)
 _timerSensorsOverlap(
 	IN:= _monitorSensorsOverlap AND sensorHP AND sensorWP,
-	PT:= _sensorsOverlapTimeout);]]></ST>
+	PT:= _sensorsOverlapTimeout);
+(*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
     <Method Name="_methodHeader" Id="{697a6e2d-5c00-4306-aac2-c0c90b1d5589}" FolderPath="Internal\">
@@ -140,17 +145,19 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF _isInit THEN RETURN; END_IF
-
+        <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
+IF _isInit THEN RETURN; END_IF
+(*----------------------------------------------------------------------------------------------*)
 IF (_sensorTagHP = '') THEN
 	_notUsedSensorHP:= TRUE;
 END_IF
-
+(*----------------------------------------------------------------------------------------------*)
 IF (_sensorTagWP = '') THEN
 	_notUsedSensorWP:= TRUE;
 END_IF
-
-_isInit:= TRUE;]]></ST>
+(*----------------------------------------------------------------------------------------------*)
+_isInit:= TRUE;
+(*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
     <Method Name="addInterlockHP" Id="{ad3bdc61-5cb8-033b-1e59-6dedd0ef52c2}">

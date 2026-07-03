@@ -1,22 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
-  <POU Name="FB_CylinderNexaHmi" Id="{a06e4a05-335d-41d8-bd6c-a9681a788555}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_CylinderNexaHmi EXTENDS FB_Cylinder
+  <POU Name="FB_LiftCylinderNexaHmi_Bosch" Id="{78995256-dfc8-08be-37e2-ecf75527a570}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LiftCylinderNexaHmi_Bosch EXTENDS FB_LiftCylinderBosch
 VAR
 (*----------------------------------------------------------------------------------------------*)
-	_Hmi						: TcNexa_Devices_TcDeviceBase.FB_DeviceNexaHmi(deviceType:= 'cylinders');
+	_Hmi						: TcNexa_Devices_TcDeviceBase.FB_DeviceNexaHmi(deviceType:= 'cylinders3pos');
 	_onHmiConnection			: Tc2_Standard.R_TRIG;
 	_isHmiConnected				: BOOL;
 	_commandNameHP				: STRING;
+	_commandNameMID				: STRING;
 	_commandNameWP				: STRING;
 	_manualMode					: BOOL;
 	_onResponseError			: Tc2_Standard.R_TRIG;
 	_onResponsePass				: Tc2_Standard.R_TRIG;
 	_interlockHPforOtherDevices	: STRING;
+	_interlockMIDforOtherDevices: STRING;
 	_interlockWPforOtherDevices	: STRING;
 	(* Control VAR *)
 	_lastNotUsedSensorHP		: BOOL;
 	_lastSensorHP				: BOOL;
+	_lastNotUsedSensorMID		: BOOL;
+	_lastSensorMID				: BOOL;
 	_lastNotUsedSensorWP		: BOOL;
 	_lastSensorWP				: BOOL;
 	_message					: STRING(255);
@@ -24,12 +28,16 @@ VAR
 (*----------------------------------------------------------------------------------------------*)
 	_ButtonHP					: TcNexa_Devices_TcDeviceBase.FB_DeviceButtonNexaHmi(
 									Hmi			:= _Hmi, 
-									topic		:= 'general/buttons/HP/');
+									topic		:= 'general/buttons/1/');
+	_ButtonMID					: TcNexa_Devices_TcDeviceBase.FB_DeviceButtonNexaHmi(
+									Hmi			:= _Hmi, 
+									topic		:= 'general/buttons/2/');
 	_ButtonWP					: TcNexa_Devices_TcDeviceBase.FB_DeviceButtonNexaHmi(
 									Hmi			:= _Hmi, 
-									topic		:= 'general/buttons/WP/');
+									topic		:= 'general/buttons/3/');
 (*----------------------------------------------------------------------------------------------*)
 	_requestHP					: BOOL;
+	_requestMID					: BOOL;
 	_requestWP					: BOOL;
 (*----------------------------------------------------------------------------------------------*)
 END_VAR
@@ -37,9 +45,9 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Folder Name="Property" Id="{02bde9a1-f084-0783-1fff-3b723a4f65ea}" />
-    <Folder Name="Protected" Id="{6f4f0496-5df3-4fdf-84ef-53779d8cadea}" />
-    <Method Name="_handleButtons" Id="{97794b87-e193-0072-13ea-f292d2ee2590}" FolderPath="Protected\">
+    <Folder Name="Property" Id="{bfc5d6ad-f4dd-0a7b-1c2b-ba1b4e72f762}" />
+    <Folder Name="Protected" Id="{95219bb1-5f4b-0412-39c3-162fda3f965c}" />
+    <Method Name="_handleButtons" Id="{411c641d-9fb1-0ea1-23de-89772c748acc}" FolderPath="Protected\">
       <Declaration><![CDATA[METHOD PROTECTED _handleButtons
 VAR_INPUT
 END_VAR
@@ -51,6 +59,11 @@ _ButtonHP.focused:= valveHP;
 _ButtonHP.name:= _commandNameHP;
 _ButtonHP.FB_main();
 (*----------------------------------------------------------------------------------------------*)
+_ButtonMID.enabled:= NOT _interlockMID AND _manualMode;
+_ButtonMID.focused:= NOT valveHP AND NOT valveWP;
+_ButtonMID.name:= _commandNameMID;
+_ButtonMID.FB_main();
+(*----------------------------------------------------------------------------------------------*)
 _ButtonWP.enabled:= NOT _interlockWP AND _manualMode;
 _ButtonWP.focused:= valveWP;
 _ButtonWP.name:= _commandNameWP;
@@ -58,36 +71,45 @@ _ButtonWP.FB_main();
 (*----------------------------------------------------------------------------------------------*)
 IF NOT _manualMode THEN RETURN; END_IF
 IF _ButtonHP.onTap THEN	_requestHP:= TRUE; END_IF
+IF _ButtonMID.onTap THEN _requestMID:= TRUE; END_IF
 IF _ButtonWP.onTap THEN	_requestWP:= TRUE; END_IF
 (*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
-    <Method Name="_handleManual" Id="{7761fac9-f156-0d0e-1a07-34609e03ce5e}" FolderPath="Protected\">
+    <Method Name="_handleManual" Id="{fd441124-c2ec-0a6d-239f-bf663bd65621}" FolderPath="Protected\">
       <Declaration><![CDATA[METHOD PROTECTED _handleManual
 VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_message:= '';
-
-IF NOT _manualMode THEN
+        <ST><![CDATA[IF NOT _manualMode THEN
 	_requestHP:= FALSE;
+	_requestMID:= FALSE;
 	_requestWP:= FALSE;
 	_message:= 'Movement blocked: Not in manual mode';
+ELSIF _interlockHP AND NOT _inHP THEN
+	_message:= Tc2_Standard.CONCAT(STR1:= _commandNameHP, ' blocked: ');
+	_message:= Tc2_Standard.CONCAT(STR1:= _message, _interlockMessageHP);
+ELSIF _interlockMID AND NOT _inMID THEN
+	_message:= Tc2_Standard.CONCAT(STR1:= _commandNameHP, ' blocked: ');
+	_message:= Tc2_Standard.CONCAT(STR1:= _message, _interlockMessageMID);
+ELSIF _interlockWP AND NOT _inWP THEN
+	_message:= Tc2_Standard.CONCAT(STR1:= _commandNameWP, ' blocked: ');
+	_message:= Tc2_Standard.CONCAT(STR1:= _message, _interlockMessageWP);
 ELSE
+	_message:= '';
 	(* HP *)
-	IF _interlockHP AND NOT _inHP THEN
-		_message:= Tc2_Standard.CONCAT(STR1:= _commandNameHP, ' blocked: ');
-		_message:= Tc2_Standard.CONCAT(STR1:= _message, _interlockMessageHP);
-	ELSIF _requestHP THEN
+	IF _requestHP THEN
 		moveToHP(Response:= _InternalResponse);
 		_requestHP:= FALSE;
 	END_IF
+	(* MID *)
+	IF _requestMID THEN
+		moveToMID(Response:= _InternalResponse);
+		_requestMID:= FALSE;
+	END_IF
 	(* WP *)
-	IF _interlockWP AND NOT _inWP THEN
-		_message:= Tc2_Standard.CONCAT(STR1:= _commandNameWP, ' blocked: ');
-		_message:= Tc2_Standard.CONCAT(STR1:= _message, _interlockMessageWP);
-	ELSIF _requestWP THEN
+	IF _requestWP THEN
 		moveToWP(Response:= _InternalResponse);
 		_requestWP:= FALSE;
 	END_IF
@@ -95,7 +117,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="_onConnection" Id="{66b7bbd5-26b9-4e3b-9129-d1227eacf7a1}" FolderPath="Protected\">
+    <Method Name="_onConnection" Id="{ef6664ee-b4f4-0cd3-2147-3f032dacf684}" FolderPath="Protected\">
       <Declaration><![CDATA[METHOD PROTECTED _onConnection
 VAR_INPUT
 END_VAR
@@ -105,14 +127,17 @@ END_VAR
 
 (* Publish *)
 _Hmi.publish(
-	topic	:= 'general/sensorTagHP',
+	topic	:= 'general/sensorTag1',
 	payload	:= _sensorTagHP);
 _Hmi.publish(
-	topic	:= 'general/sensorTagWP',
+	topic	:= 'general/sensorTag2',
+	payload	:= _sensorTagMID);
+_Hmi.publish(
+	topic	:= 'general/sensorTag3',
 	payload	:= _sensorTagWP);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="_publishTopics" Id="{f423ba49-c089-4fda-9965-66ea711d1b7c}" FolderPath="Protected\">
+    <Method Name="_publishTopics" Id="{c90d36bd-04fb-0f69-1492-12c650b51216}" FolderPath="Protected\">
       <Declaration><![CDATA[METHOD PROTECTED _publishTopics
 VAR_INPUT
 END_VAR
@@ -132,6 +157,20 @@ IF (_lastSensorHP <> sensorHP) OR _onHmiConnection.Q THEN
 	_Hmi.publish(
 		topic	:= 'general/sensorHP',
 		payload	:= BOOL_TO_STRING(sensorHP));
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_lastNotUsedSensorMID <> _notUsedSensorMID) OR _onHmiConnection.Q THEN
+	_lastNotUsedSensorMID:= _notUsedSensorMID;
+	_Hmi.publish(
+		topic	:= 'general/notUsedSensorMID',
+		payload	:= BOOL_TO_STRING(_notUsedSensorMID));
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_lastSensorMID <> sensorMID) OR _onHmiConnection.Q THEN
+	_lastSensorMID:= sensorMID;
+	_Hmi.publish(
+		topic	:= 'general/sensorMID',
+		payload	:= BOOL_TO_STRING(sensorMID));
 END_IF
 (*----------------------------------------------------------------------------------------------*)
 IF (_lastNotUsedSensorWP <> _notUsedSensorWP) OR _onHmiConnection.Q THEN
@@ -157,7 +196,7 @@ END_IF
 (*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
-    <Method Name="FB_init" Id="{89db22b4-7f64-0e0e-2f77-f5ba4ba17cbf}" FolderPath="Protected\">
+    <Method Name="FB_init" Id="{9c7522d0-b971-07c1-3907-26505edecd18}" FolderPath="Protected\">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
 	bInitRetains 	: BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
@@ -166,7 +205,9 @@ VAR_INPUT
 	tag				: STRING;
 	sensorTagHP		: STRING;
 	sensorTagWP		: STRING;
+	sensorTagMID	: STRING;
 	commandNameHP	: STRING;
+	commandNameMID	: STRING;
 	commandNameWP	: STRING;
 	cellTag			: STRING;
 	stationTag		: STRING;
@@ -174,6 +215,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^._commandNameHP:= commandNameHP;
+THIS^._commandNameMID:= commandNameMID;
 THIS^._commandNameWP:= commandNameWP;
 
 THIS^._Hmi.cellTag:= cellTag;
@@ -189,7 +231,7 @@ _interlockWPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _interlockWPforOtherDev
 _interlockWPforOtherDevices:= Tc2_Standard.CONCAT(STR1:= _interlockWPforOtherDevices, STR2:= ' position');]]></ST>
       </Implementation>
     </Method>
-    <Method Name="FB_main" Id="{7288df59-cdb5-4cea-a1e3-32fbb9d17051}">
+    <Method Name="FB_main" Id="{b93f4252-9f22-0357-33ed-2d92a485b8b6}">
       <Declaration><![CDATA[METHOD PUBLIC FB_main
 VAR_INPUT
 END_VAR
@@ -206,9 +248,9 @@ _handleButtons();
 _handleManual();]]></ST>
       </Implementation>
     </Method>
-    <Property Name="hostName" Id="{7e5636fe-132a-0acc-1ae3-2ce97c5d5e86}" FolderPath="Property\">
+    <Property Name="hostName" Id="{8a99137b-cc3a-0729-38a9-db64d7288712}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC hostName : Tc2_System.T_MaxString]]></Declaration>
-      <Get Name="Get" Id="{7ba73824-d409-008c-05f0-177e106229c1}">
+      <Get Name="Get" Id="{9bc795d9-2fc0-037f-1126-ae5ce4a24f08}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -216,7 +258,7 @@ END_VAR
           <ST><![CDATA[hostName:= _Hmi.hostName;]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{5bc415cc-d214-0cda-1aae-cee1fbf8fc6f}">
+      <Set Name="Set" Id="{abc1a50a-705c-0124-0374-77eee3c6b333}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -225,9 +267,9 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
-    <Property Name="hostPort" Id="{14cbd58c-5849-0244-3c79-cc8263901a1f}" FolderPath="Property\">
+    <Property Name="hostPort" Id="{551bda02-6d99-0274-22a3-6f831f051408}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC hostPort : UINT]]></Declaration>
-      <Get Name="Get" Id="{7d30d306-3ede-0146-0783-d5b9c74d5ee9}">
+      <Get Name="Get" Id="{6c94a5b4-39b4-05ea-2137-a5215aca072f}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -235,7 +277,7 @@ END_VAR
           <ST><![CDATA[hostPort:= _Hmi.hostPort;]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{fed14df9-ad74-08c3-2cc2-5702d4cb36cf}">
+      <Set Name="Set" Id="{cbabfe21-d43c-0409-0a0f-fa885fd94eb9}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -244,9 +286,9 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
-    <Property Name="interlockMessageHP" Id="{38f74a37-690f-0b2c-3988-cd0be520935e}" FolderPath="Property\">
+    <Property Name="interlockMessageHP" Id="{bbc3c2f4-778a-01f7-393f-da4f30078d14}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY interlockMessageHP : STRING(255)]]></Declaration>
-      <Get Name="Get" Id="{2ab42182-b181-0ed9-3c98-ac94fe5e55c6}">
+      <Get Name="Get" Id="{d7f6817c-563e-0e2e-2929-d181239c617b}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -255,9 +297,20 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="interlockMessageWP" Id="{73b1be68-b97c-03d8-2c32-42db0d213a42}" FolderPath="Property\">
+    <Property Name="interlockMessageMID" Id="{057ba1d7-59c1-07a5-19c8-6d741b8a9f9a}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY interlockMessageMID : STRING(255)]]></Declaration>
+      <Get Name="Get" Id="{f9fa87f6-5609-0397-3438-c70ae2379dd6}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[interlockMessageMID:= _interlockMIDforOtherDevices;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="interlockMessageWP" Id="{61cc1ce2-f21d-00c5-09db-a59cd45dc5dd}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY interlockMessageWP : STRING(255)]]></Declaration>
-      <Get Name="Get" Id="{99159a4b-3f50-0de6-03a9-e9eecf9304ad}">
+      <Get Name="Get" Id="{e512db67-e7bf-0c5d-37d2-925aadb1974e}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -266,9 +319,9 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="manualMode" Id="{302ce693-5704-0317-16e6-0b6e70ea6c09}" FolderPath="Property\">
+    <Property Name="manualMode" Id="{90bcd803-d539-0f94-2192-0f2814fd8698}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY manualMode : BOOL]]></Declaration>
-      <Get Name="Get" Id="{1598543b-157f-0471-2ca8-d160363d5541}">
+      <Get Name="Get" Id="{761edeb6-3eaa-0eb5-1d16-d25ea9822ad2}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
@@ -276,7 +329,7 @@ END_VAR
           <ST><![CDATA[manualMode:= _manualMode;]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{b370ce93-280e-0394-1067-40a0982f23ac}">
+      <Set Name="Set" Id="{5e21e72f-c253-075a-36f2-707dded886a3}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>

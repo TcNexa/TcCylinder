@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_LiftCylinderBosch" Id="{cd998b1a-dcf2-035a-166d-956628307c66}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LiftCylinderBosch EXTENDS FB_Cylinder
+VAR
+(*----------------------------------------------------------------------------------------------*)
+	sensorMID		AT %I*		: BOOL;
+(*----------------------------------------------------------------------------------------------*)
+	_inMID						: BOOL;
+	_newStateInterlockMID		: BOOL;
+	_newStateInterlockMsgMID	: STRING(255);
+	_interlockMID				: BOOL;
+	_interlockMessageMID		: STRING(255);
+	_sensorTagMID				: STRING;
+	_notUsedSensorMID			: BOOL;
+	_delayTimeAfterReachedMID	: TIME;
+	_timerInMID					: Tc2_Standard.TON;	
+(*----------------------------------------------------------------------------------------------*)
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Internal" Id="{2b6daefa-650d-0f24-2fc8-559a700c9078}" />
+    <Folder Name="Property" Id="{05a26ced-c226-0e15-0293-3d5097c6c6e0}" />
+    <Method Name="_handleInterlocks" Id="{7c1316e0-e86d-0ad2-0183-4f37e18405db}" FolderPath="Internal\">
+      <Declaration><![CDATA[METHOD INTERNAL _handleInterlocks
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
+_interlockHP:= _newStateInterlockHP;
+_interlockMessageHP:= _newStateInterlockMsgHP;
+_newStateInterlockHP:= FALSE;
+_newStateInterlockMsgHP:= '';
+(*----------------------------------------------------------------------------------------------*)
+_interlockMID:= _newStateInterlockMID;
+_interlockMessageMID:= _newStateInterlockMsgMID;
+_newStateInterlockMID:= FALSE;
+_newStateInterlockMsgMID:= '';
+(*----------------------------------------------------------------------------------------------*)
+_interlockWP:= _newStateInterlockWP;
+_interlockMessageWP:= _newStateInterlockMsgWP;
+_newStateInterlockWP:= FALSE;
+_newStateInterlockMsgWP:= '';
+(*----------------------------------------------------------------------------------------------*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_handlePositionStatus" Id="{8cc11a2f-bdd6-0f92-0cf6-98319b8dd1b7}" FolderPath="Internal\">
+      <Declaration><![CDATA[METHOD INTERNAL _handlePositionStatus
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
+_timerInHP(
+	IN	:= valveHP AND (_notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _monitorSensorsOverlap),
+	PT	:= _delayTimeAfterReachedHP,
+	Q	=> _inHP);
+(*----------------------------------------------------------------------------------------------*)
+_timerInMID(
+	IN	:= NOT valveHP AND NOT valveWP AND (_notUsedSensorMID OR sensorMID) AND (NOT sensorHP OR NOT _monitorSensorsOverlap) AND (NOT sensorWP OR NOT _monitorSensorsOverlap),
+	PT	:= _delayTimeAfterReachedMID,
+	Q	=> _inMID);
+(*----------------------------------------------------------------------------------------------*)
+_timerInWP(
+	IN	:= valveWP AND (_notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _monitorSensorsOverlap),
+	PT	:= _delayTimeAfterReachedWP,
+	Q	=> _inWP);
+(*----------------------------------------------------------------------------------------------*)
+_timerTimeout(
+	IN:= (_calledMethod <> ''),
+	PT:= _movementTimeout);
+(*----------------------------------------------------------------------------------------------*)
+_timerSensorsOverlap(
+	IN:= _monitorSensorsOverlap AND sensorHP AND sensorWP,
+	PT:= _sensorsOverlapTimeout);
+(*----------------------------------------------------------------------------------------------*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_onInit" Id="{c912801e-c395-0264-30af-e08bac4ddd9d}" FolderPath="Internal\">
+      <Declaration><![CDATA[METHOD PROTECTED _onInit
+VAR_INST
+	_isInit				: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
+IF _isInit THEN RETURN; END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_sensorTagHP = '') THEN
+	_notUsedSensorHP:= TRUE;
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_sensorTagMID = '') THEN
+	_notUsedSensorMID:= TRUE;
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+IF (_sensorTagWP = '') THEN
+	_notUsedSensorWP:= TRUE;
+END_IF
+(*----------------------------------------------------------------------------------------------*)
+_isInit:= TRUE;
+(*----------------------------------------------------------------------------------------------*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="addInterlockMID" Id="{c9b7d522-be9a-0489-2d2f-2afa8918693e}">
+      <Declaration><![CDATA[METHOD addInterlockMID
+VAR_INPUT
+	condition		: BOOL;
+	message			: STRING(255);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF condition THEN
+	_newStateInterlockMID:= TRUE;
+	_newStateInterlockMsgMID:= message;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="delayTimeAfterReachedMID" Id="{129f627b-7b47-0256-18bc-3560478d814c}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY delayTimeAfterReachedMID : TIME]]></Declaration>
+      <Get Name="Get" Id="{1221ac0f-82db-0bb7-01a2-2ff08d13bd52}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[delayTimeAfterReachedMID:= _delayTimeAfterReachedMID;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{1838641b-a781-0aed-1ce4-4df53a688357}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_delayTimeAfterReachedMID:= delayTimeAfterReachedMID;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="FB_init" Id="{b47e510c-c13e-0423-02cd-91f086977516}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains 	: BOOL; 	// if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode 	: BOOL;  	// if TRUE, the instance afterwards gets moved into the copy code (online change)
+	name			: STRING;	// identifier for HMI display and logging, example Clipping cylinder
+	tag				: STRING;	// el. schematic tag for device, example C1, 10MM1, Z1, etc.
+	sensorTagHP		: STRING;	// el. schematic tag for home position sensor input, leave empty '' if no HP sensor attached
+	sensorTagWP		: STRING;	// el. schematic tag for work position sensor input, leave empty '' if no WP sensor attached
+	sensorTagMID	: STRING;	// el. schematic tag for mid position sensor input, leave empty '' if no MID sensor attached
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._sensorTagMID:= sensorTagMID;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="inMID" Id="{5abbd232-88f0-05ff-286d-7981a8a11b57}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY PUBLIC inMID : BOOL]]></Declaration>
+      <Get Name="Get" Id="{e449f219-d992-03a9-2cc3-7002d2a5e35a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[inMID:= _inMID;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="moveToMID" Id="{68cb3ece-96b9-0619-21e0-15d367a296a0}">
+      <Declaration><![CDATA[METHOD PUBLIC moveToMID
+VAR_INPUT
+	Response		: REFERENCE TO TcNexa_Components_TcProcess.FB_MethodResponse;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_methodState:= _methodHeader(methodName:= 'move to MID');
+
+IF _methodState.execute THEN
+	IF NOT _interlockMID THEN
+		valveHP:= FALSE;
+		valveWP:= FALSE;		
+		(* Error - all sensors active *)
+		IF _timerSensorsOverlap.Q THEN
+			_InternalResponse.setFail(message:= _getErrorMessage(), description:= 'All sensors active');
+		(* Error movement - end position not reached *)		
+		ELSIF _timerTimeout.Q THEN
+			_InternalResponse.setFail(message:= _getErrorMessage(), description:= _getErrorMsgPositionNotReached(_sensorTagMID));
+		(* Succes - end position reached *)
+		ELSIF _timerInMID.Q THEN
+			_InternalResponse.setPass();
+		END_IF	
+	ELSE
+		_InternalResponse.setFail(message:= _getMsgInterlocked(), description:= _interlockMessageMID);
+	END_IF
+END_IF
+
+_methodFooter(Response:= Response);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
