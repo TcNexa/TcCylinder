@@ -18,7 +18,7 @@
     <Company>TcNexa</Company>
     <Released>false</Released>
     <Title>TcCylinder</Title>
-    <ProjectVersion>2.1.0</ProjectVersion>
+    <ProjectVersion>2.2.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{97b7b969-1a00-4526-9b48-343321aa96be}</Id>
@@ -107,6 +107,9 @@
     <GlobalVersionStructureIncluded>true</GlobalVersionStructureIncluded>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Cylinder\DUTs\ST_CylinderInfo.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Cylinder\ITFs\I_Cylinder.TcIO">
       <SubType>Code</SubType>
     </Compile>
@@ -137,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Cylinder\ITFs" />
+    <Folder Include="Cylinder\DUTs" />
     <Folder Include="Cylinder\POUs" />
     <Folder Include="Cylinder" />
     <Folder Include="Tests" />

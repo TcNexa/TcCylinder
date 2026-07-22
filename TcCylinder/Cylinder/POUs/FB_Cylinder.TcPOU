@@ -3,6 +3,7 @@
   <POU Name="FB_Cylinder" Id="{680c2ba4-8397-462a-87a8-fe203f1c0cf9}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Cylinder EXTENDS TcNexa_Devices_TcDeviceBase.FB_DeviceBase IMPLEMENTS I_Cylinder
 VAR
+	_Info						: ST_CylinderInfo;
 (*----------------------------------------------------------------------------------------------*)
 	sensorHP		AT %I*		: BOOL;
 	sensorWP		AT %I*		: BOOL;
@@ -160,6 +161,16 @@ _isInit:= TRUE;
 (*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
+    <Method Name="_updateInfo" Id="{29a1ef24-61a5-08c7-0b4d-3c71ad9a62f6}" FolderPath="Internal\">
+      <Declaration><![CDATA[METHOD INTERNAL _updateInfo
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_Info.sensorHP:= sensorHP;
+_Info.sensorWP:= sensorWP;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="addInterlockHP" Id="{ad3bdc61-5cb8-033b-1e59-6dedd0ef52c2}">
       <Declaration><![CDATA[METHOD addInterlockHP
 VAR_INPUT
@@ -254,7 +265,8 @@ END_VAR
 
 _onInit();
 _handleInterlocks();
-_handlePositionStatus();]]></ST>
+_handlePositionStatus();
+_updateInfo();]]></ST>
       </Implementation>
     </Method>
     <Method Name="fill" Id="{65a9eca6-4fe0-0f43-1b39-3aaf0673fea5}">
@@ -267,6 +279,17 @@ END_VAR
 valveWP:= TRUE;]]></ST>
       </Implementation>
     </Method>
+    <Property Name="Info" Id="{c7f89f8b-7ed3-0d89-2b60-c869aa85b266}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY Info : REFERENCE TO ST_CylinderInfo]]></Declaration>
+      <Get Name="Get" Id="{100da3e6-5618-041e-0d90-e88ffd084119}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Info REF= _Info;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="inHP" Id="{d3396af4-179b-4b3f-bfb6-638a6f9684d0}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY PUBLIC inHP : BOOL]]></Declaration>
       <Get Name="Get" Id="{6c32fa55-1d59-473e-864b-6cc4b5cf7c54}">
