@@ -107,6 +107,9 @@
     <GlobalVersionStructureIncluded>true</GlobalVersionStructureIncluded>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Cylinder\DUTs\ST_CylinderConfig.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Cylinder\DUTs\ST_CylinderInfo.TcDUT">
       <SubType>Code</SubType>
     </Compile>

@@ -3,13 +3,14 @@
   <POU Name="FB_Cylinder" Id="{680c2ba4-8397-462a-87a8-fe203f1c0cf9}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Cylinder EXTENDS TcNexa_Devices_TcDeviceBase.FB_DeviceBase IMPLEMENTS I_Cylinder
 VAR
-	_Info						: ST_CylinderInfo;
 (*----------------------------------------------------------------------------------------------*)
 	sensorHP		AT %I*		: BOOL;
 	sensorWP		AT %I*		: BOOL;
 	valveHP			AT %Q*		: BOOL;
 	valveWP			AT %Q*		: BOOL;
 (*----------------------------------------------------------------------------------------------*)
+	_Config						: ST_CylinderConfig;
+	_Info						: ST_CylinderInfo;
 	_inHP						: BOOL;
 	_inWP						: BOOL;
 	_newStateInterlockHP		: BOOL;
@@ -22,13 +23,8 @@ VAR
 	_interlockMessageWP			: STRING(255);
 	_sensorTagHP				: STRING;
 	_sensorTagWP				: STRING;
-	_movementTimeout			: TIME:= T#5S;
-	_monitorSensorsOverlap		: BOOL:= TRUE;
-	_sensorsOverlapTimeout		: TIME:= T#100MS;
 	_notUsedSensorHP			: BOOL;
 	_notUsedSensorWP			: BOOL;
-	_delayTimeAfterReachedHP	: TIME;
-	_delayTimeAfterReachedWP	: TIME;
 	_timerTimeout				: Tc2_Standard.TON;
 	_timerSensorsOverlap		: Tc2_Standard.TON;
 	_timerInHP					: Tc2_Standard.TON;
@@ -92,22 +88,22 @@ END_VAR
       <Implementation>
         <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
 _timerInHP(
-	IN	:= valveHP AND (_notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _monitorSensorsOverlap),
-	PT	:= _delayTimeAfterReachedHP,
+	IN	:= valveHP AND (_notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _Config.monitorSensorsOverlap),
+	PT	:= _Config.delayTimeAfterReachedHP,
 	Q	=> _inHP);
 (*----------------------------------------------------------------------------------------------*)
 _timerInWP(
-	IN	:= valveWP AND (_notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _monitorSensorsOverlap),
-	PT	:= _delayTimeAfterReachedWP,
+	IN	:= valveWP AND (_notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _Config.monitorSensorsOverlap),
+	PT	:= _Config.delayTimeAfterReachedWP,
 	Q	=> _inWP);
 (*----------------------------------------------------------------------------------------------*)
 _timerTimeout(
 	IN:= (_calledMethod <> ''),
-	PT:= _movementTimeout);
+	PT:= _Config.movementTimeout);
 (*----------------------------------------------------------------------------------------------*)
 _timerSensorsOverlap(
-	IN:= _monitorSensorsOverlap AND sensorHP AND sensorWP,
-	PT:= _sensorsOverlapTimeout);
+	IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
+	PT:= _Config.sensorsOverlapTimeout);
 (*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
@@ -199,43 +195,16 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Property Name="delayTimeAfterReachedHP" Id="{8c1f2677-0daa-0c05-15ec-88d15dc725ab}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY delayTimeAfterReachedHP : TIME]]></Declaration>
-      <Get Name="Get" Id="{89d296ae-b3a4-0097-1fc9-7850713d38b8}">
+    <Property Name="Config" Id="{6d4fd4e3-6753-0f4e-3a48-e3d534424237}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY Config : REFERENCE TO ST_CylinderConfig]]></Declaration>
+      <Get Name="Get" Id="{3e62909f-bd08-0f1a-0ad9-317ffd63c4d1}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[delayTimeAfterReachedHP:= _delayTimeAfterReachedHP;]]></ST>
+          <ST><![CDATA[Config REF= _Config;]]></ST>
         </Implementation>
       </Get>
-      <Set Name="Set" Id="{40cefdc7-3876-05c7-37fe-845da8d79903}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_delayTimeAfterReachedHP:= delayTimeAfterReachedHP;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
-    <Property Name="delayTimeAfterReachedWP" Id="{2585a8d9-041c-0e7f-3e21-41bee3c91027}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY delayTimeAfterReachedWP : TIME]]></Declaration>
-      <Get Name="Get" Id="{8fc230f5-ecaf-0baf-306f-2432bedd8172}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[delayTimeAfterReachedWP:= _delayTimeAfterReachedWP;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{6682eed0-0ab3-0016-07f8-4bfd82eaaa5d}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_delayTimeAfterReachedWP:= delayTimeAfterReachedWP;]]></ST>
-        </Implementation>
-      </Set>
     </Property>
     <Method Name="FB_init" Id="{adaa3848-5907-46de-9004-d792f2e55d84}">
       <Declaration><![CDATA[METHOD FB_init : BOOL
@@ -312,44 +281,6 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Property Name="monitorSensorsOverlap" Id="{0d4e1ab8-96f8-09ca-140d-8db7e3f8aece}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY monitorSensorsOverlap : BOOL]]></Declaration>
-      <Get Name="Get" Id="{566caacd-119b-0530-1f3a-cc4866738c24}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[monitorSensorsOverlap:= _monitorSensorsOverlap;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{98ed81e7-68fa-077e-1917-2d8c2a01a98d}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_monitorSensorsOverlap:= monitorSensorsOverlap;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
-    <Property Name="movementTimeout" Id="{85797ff6-b1cd-0b70-1b12-09fbe1fa6efe}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY movementTimeout : TIME]]></Declaration>
-      <Get Name="Get" Id="{d2c43be1-6279-01b4-078d-29054a2987ac}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[movementTimeout:= _movementTimeout;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{030b1093-d0c7-0fb1-3982-feab179c64f1}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_movementTimeout:= movementTimeout;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
     <Method Name="moveToHP" Id="{21c945cc-2bad-44c0-b6d4-d1a325440fb0}">
       <Declaration><![CDATA[METHOD PUBLIC moveToHP
 VAR_INPUT
@@ -423,24 +354,5 @@ END_VAR
 valveWP:= FALSE;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="sensorsOverlapTimeout" Id="{c2d78593-82b3-065f-0242-8309f008178a}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY sensorsOverlapTimeout : TIME]]></Declaration>
-      <Get Name="Get" Id="{1eb7ea26-eadf-0e53-2e0e-38566a201b00}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[sensorsOverlapTimeout:= _sensorsOverlapTimeout;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{4b94f6b5-4dd3-0a13-07d5-b98ef402f9f9}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_sensorsOverlapTimeout:= sensorsOverlapTimeout;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
   </POU>
 </TcPlcObject>

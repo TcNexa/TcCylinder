@@ -30,7 +30,7 @@ END_VAR
 	_testTimeout(IN:= TRUE, PT:= T#10S);
 	_timerDelay(IN:= TRUE, PT:= T#1S);
 	// Cylinder call
-	_Cylinder.delayTimeAfterReachedHP:= T#1S;	
+	_Cylinder.Config.delayTimeAfterReachedHP:= T#1S;	
 	_Cylinder.FB_main();
 	_Cylinder.moveToHP(Response:= _Response);
 	TcUnit.WRITE_PROTECTED_BOOL(Ptr:= ADR(_Cylinder.sensorHP), Value:= _timerDelay.Q);
@@ -151,7 +151,7 @@ END_VAR
 	// Timeout if the movement is not executed right
 	_testTimeout(IN:= TRUE, PT:= T#10S);
 	// Cylinder call
-	_Cylinder.delayTimeAfterReachedHP:= T#1S;
+	_Cylinder.Config.delayTimeAfterReachedHP:= T#1S;
 	_Cylinder.FB_main();
 	_Cylinder.moveToHP(Response:= _Response);
 	// Wait result
@@ -192,7 +192,7 @@ END_VAR
 	_testTimeout(IN:= TRUE, PT:= T#10S);
 	_timerDelay(IN:= TRUE, PT:= T#1S);
 	// Cylinder call
-	_Cylinder.delayTimeAfterReachedHP:= T#1S;	
+	_Cylinder.Config.delayTimeAfterReachedHP:= T#1S;	
 	_Cylinder.FB_main();
 	_Cylinder.moveToHP(Response:= _Response);
 	TcUnit.WRITE_PROTECTED_BOOL(Ptr:= ADR(_Cylinder.sensorHP), Value:= _timerDelay.Q);
@@ -211,7 +211,7 @@ END_VAR
 			Condition	:= _Response.error,
 			Message		:= 'error not FALSE');
 		AssertEquals_TIME(
-			Expected	:= _timerDelay.ET + _Cylinder.delayTimeAfterReachedHP + T#10MS,
+			Expected	:= _timerDelay.ET + _Cylinder.Config.delayTimeAfterReachedHP + T#10MS,
 			Actual		:= _testTimeout.ET,
 			Message		:= 'delayTimeAfterReachedHP missmatch');
 			

@@ -4,24 +4,6 @@
     <Declaration><![CDATA[INTERFACE I_Cylinder
 ]]></Declaration>
     <Folder Name="Property" Id="{267c47a5-ae14-0388-13f1-6002b9189ef5}" />
-    <Property Name="delayTimeAfterReachedHP" Id="{fc60306e-1d25-07b8-2f41-0c1155cb85e4}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY delayTimeAfterReachedHP : TIME]]></Declaration>
-      <Get Name="Get" Id="{d28d7299-deb5-02c3-3ed8-bb02a69fbd6e}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{4b4c3fc8-0b1b-0f3e-006e-2945b0b2f22f}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
-    </Property>
-    <Property Name="delayTimeAfterReachedWP" Id="{560c36ae-0336-0561-08e9-c13567076cd1}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY delayTimeAfterReachedWP : TIME]]></Declaration>
-      <Get Name="Get" Id="{3ccaa96f-e995-09c3-2608-191c276798e7}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{5c725605-e158-0463-0450-a679cbe14478}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
-    </Property>
     <Method Name="fill" Id="{33ec8077-617b-0751-14af-9288b39bc749}">
       <Declaration><![CDATA[METHOD fill
 VAR_INPUT
@@ -39,24 +21,6 @@ END_VAR
       <Get Name="Get" Id="{afbd79aa-1f23-0eb3-04a4-731c69d80fac}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
-    </Property>
-    <Property Name="monitorSensorsOverlap" Id="{39430df8-b8fb-0a57-3acc-d754d3dbca92}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY monitorSensorsOverlap : BOOL]]></Declaration>
-      <Get Name="Get" Id="{6fad0bab-fae5-0ed2-1302-7cf37c678764}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{daf9efc5-33f9-0c16-275b-0f8f39af406b}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
-    </Property>
-    <Property Name="movementTimeout" Id="{e16a4c43-507d-097a-13c0-bfa35ae5658c}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY movementTimeout : TIME]]></Declaration>
-      <Get Name="Get" Id="{9f11280f-9700-080e-194f-91813fb1b852}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{eb2a27bb-64af-022f-295b-75092f78eb9f}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
     </Property>
     <Method Name="moveToHP" Id="{501d1b69-466f-0a60-3f90-253aff92e997}">
       <Declaration><![CDATA[METHOD PUBLIC moveToHP
@@ -78,14 +42,5 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
     </Method>
-    <Property Name="sensorsOverlapTimeout" Id="{40e1caec-57d4-026c-28c4-d33a2a4ad75f}" FolderPath="Property\">
-      <Declaration><![CDATA[PROPERTY sensorsOverlapTimeout : TIME]]></Declaration>
-      <Get Name="Get" Id="{af68bc77-08c7-0721-2ab6-0f19ec293e34}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Get>
-      <Set Name="Set" Id="{e5d5a6b7-075a-0eb2-3929-b03957f394d1}">
-        <Declaration><![CDATA[]]></Declaration>
-      </Set>
-    </Property>
   </Itf>
 </TcPlcObject>

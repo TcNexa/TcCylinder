@@ -55,27 +55,27 @@ END_VAR
       <Implementation>
         <ST><![CDATA[(*----------------------------------------------------------------------------------------------*)
 _timerInHP(
-	IN	:= valveHP AND (_notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _monitorSensorsOverlap),
-	PT	:= _delayTimeAfterReachedHP,
+	IN	:= valveHP AND (_notUsedSensorHP OR sensorHP) AND (NOT sensorWP OR NOT _Config.monitorSensorsOverlap),
+	PT	:= _Config.delayTimeAfterReachedHP,
 	Q	=> _inHP);
 (*----------------------------------------------------------------------------------------------*)
 _timerInMID(
-	IN	:= NOT valveHP AND NOT valveWP AND (_notUsedSensorMID OR sensorMID) AND (NOT sensorHP OR NOT _monitorSensorsOverlap) AND (NOT sensorWP OR NOT _monitorSensorsOverlap),
+	IN	:= NOT valveHP AND NOT valveWP AND (_notUsedSensorMID OR sensorMID) AND (NOT sensorHP OR NOT _Config.monitorSensorsOverlap) AND (NOT sensorWP OR NOT _Config.monitorSensorsOverlap),
 	PT	:= _delayTimeAfterReachedMID,
 	Q	=> _inMID);
 (*----------------------------------------------------------------------------------------------*)
 _timerInWP(
-	IN	:= valveWP AND (_notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _monitorSensorsOverlap),
-	PT	:= _delayTimeAfterReachedWP,
+	IN	:= valveWP AND (_notUsedSensorWP OR sensorWP) AND (NOT sensorHP OR NOT _Config.monitorSensorsOverlap),
+	PT	:= _Config.delayTimeAfterReachedWP,
 	Q	=> _inWP);
 (*----------------------------------------------------------------------------------------------*)
 _timerTimeout(
 	IN:= (_calledMethod <> ''),
-	PT:= _movementTimeout);
+	PT:= _Config.movementTimeout);
 (*----------------------------------------------------------------------------------------------*)
 _timerSensorsOverlap(
-	IN:= _monitorSensorsOverlap AND sensorHP AND sensorWP,
-	PT:= _sensorsOverlapTimeout);
+	IN:= _Config.monitorSensorsOverlap AND sensorHP AND sensorWP,
+	PT:= _Config.sensorsOverlapTimeout);
 (*----------------------------------------------------------------------------------------------*)]]></ST>
       </Implementation>
     </Method>
